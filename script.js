@@ -9,18 +9,23 @@
 
   var questions = [
     {
-      text: "How did the surface play?",
-      options: ["Slow", "Medium", "Fast"]
+      text: "How did the surface feel during this match?",
+      options: ["Slow", "Medium", "Fast", "Not sure"]
     },
     {
       text: "Did lighting affect ball visibility?",
-      options: ["No", "Slightly", "Significantly"]
+      options: ["No", "Slightly", "Significantly", "Not sure"]
     },
     {
       text: "Did the roof interfere with play?",
-      options: ["Never", "Occasionally", "Frequently"]
+      options: ["Never", "Occasionally", "Frequently", "Not sure"]
     }
   ];
+
+  var ANSWERED_HEADING = "Thank you. Your answer will contribute to aggregated court information.";
+  var ANSWERED_DETAIL = "Individual answers are never published or shown to the venue. Over a full pilot, responses like this build into the aggregated court picture shown below.";
+  var SKIPPED_HEADING = "No problem — that's fine.";
+  var SKIPPED_DETAIL = "The question is optional. You can always answer next time, and skipping is recorded no differently to any other response.";
 
   var currentQuestionIndex = 0;
 
@@ -30,7 +35,10 @@
   var questionHeading = document.getElementById("demo-question");
   var optionsContainer = document.getElementById("demo-options");
   var startButton = document.getElementById("demo-start");
+  var skipButton = document.getElementById("demo-skip");
   var anotherButton = document.getElementById("demo-another");
+  var resultHeading = document.getElementById("demo-result-heading");
+  var resultDetail = document.getElementById("demo-result-detail");
   var stepIndicators = document.querySelectorAll("[data-step-indicator]");
 
   function setActiveStep(stepNumber) {
@@ -62,15 +70,18 @@
       button.className = "demo-option";
       button.textContent = optionLabel;
       button.addEventListener("click", function () {
-        showStage(stage3);
-        setActiveStep(3);
-        if (stage3) {
-          var heading = stage3.querySelector("h3");
-          if (heading) heading.focus();
-        }
+        showResult(false);
       });
       optionsContainer.appendChild(button);
     });
+  }
+
+  function showResult(wasSkipped) {
+    if (resultHeading) resultHeading.textContent = wasSkipped ? SKIPPED_HEADING : ANSWERED_HEADING;
+    if (resultDetail) resultDetail.textContent = wasSkipped ? SKIPPED_DETAIL : ANSWERED_DETAIL;
+    showStage(stage3);
+    setActiveStep(3);
+    if (resultHeading) resultHeading.focus();
   }
 
   if (startButton) {
@@ -78,6 +89,12 @@
       renderQuestion();
       showStage(stage2);
       setActiveStep(2);
+    });
+  }
+
+  if (skipButton) {
+    skipButton.addEventListener("click", function () {
+      showResult(true);
     });
   }
 

@@ -6,6 +6,19 @@ be shown, one-to-one, to a senior contact at a padel booking platform (such
 as Nettla, Padel Mates, MATCHi or Playtomic) to gauge interest in a small
 pilot. It is not a public marketing site and is not indexed or discoverable.
 
+## Version 2
+
+This is Version 2 of the page. It keeps the same visual identity, hero
+layout, colour palette, headline and pilot concept as the first version, but
+rewrites the copy to be more confident about the opportunity while
+consolidating the necessary caveats into one dedicated section ("What the
+pilot is designed to prove"), rather than repeating hedging language
+throughout. It also adds a worked example of the aggregated output a
+partner would receive, a "what we ask / what we provide" collaboration
+section, and a short "About the proposal" section with editable founder
+placeholders. See "Where to insert final contact details" below for what
+still needs completing.
+
 ## What this is
 
 - A single, self-contained web page (`index.html`, `styles.css`,
@@ -61,23 +74,38 @@ written carefully to avoid overstating where things stand. In particular:
 
 ## Where to insert final contact details
 
-The "Discuss a pilot" button opens a small pop-up (modal) with placeholder
-contact wording. Open `index.html` in a text editor (TextEdit works, though
-a code editor is easier to read) and search for:
+This is Version 2 of the page. There are now three places with placeholder
+text that must be completed before the page is shared with anyone. Open
+`index.html` in a text editor (TextEdit works, though a code editor is
+easier to read) and search for each one:
 
-```
-FINAL CONTACT EMAIL GOES HERE
-```
-
-You'll find it just above this line:
-
-```html
-<p class="modal__placeholder">Contact: [insert contact email here]</p>
-```
-
-Replace `[insert contact email here]` with your real contact email address
-before sharing the page with anyone. No email address has been invented or
-inserted for you.
+1. **Contact modal.** The "Get in touch" button (in the "About the
+   proposal" section) opens a small pop-up with placeholder contact
+   wording. Search for `FINAL CONTACT EMAIL GOES HERE` — you'll find it
+   just above this line:
+   ```html
+   <p class="modal__placeholder">Contact: [insert contact email here]</p>
+   ```
+2. **About the proposal section.** Search for `FOUNDER PLACEHOLDER` to find
+   the founder bio and contact details:
+   ```html
+   <p>Padel Court Check is an early-stage concept led by <strong>[FOUNDER NAME]</strong>, ...</p>
+   <dl class="about-contact">
+     <div><dt>Email</dt><dd>[Insert email address]</dd></div>
+     <div><dt>Telephone</dt><dd>[Insert telephone number, if required]</dd></div>
+   </dl>
+   ```
+   Replace `[FOUNDER NAME]`, `[Insert email address]` and the telephone line
+   with real information, or remove the telephone row entirely if you don't
+   want to share a number. No name, email address or phone number has been
+   invented for you.
+3. **Market context section.** This section is hidden by default (it has a
+   `hidden` attribute and won't display even if you open the page) because
+   it needs a verified UK padel participation figure, a verified court
+   count, and a dated source before it can honestly be shown. Search for
+   `Market context` in `index.html` to find it. Do not remove the `hidden`
+   attribute until you have replaced every `[Insert ...]` placeholder with a
+   real, sourced figure.
 
 ## Why this local page is not suitable for confidential online sharing yet
 
