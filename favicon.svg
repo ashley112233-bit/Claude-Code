@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="C J Jewellery">
+  <rect width="64" height="64" rx="14" fill="#FBF2E9"/>
+  <polygon points="32,10 50,32 32,54 14,32" fill="#FFFFFF" stroke="#3A3630" stroke-width="4" stroke-linejoin="round"/>
+  <polygon points="32,20 42,32 32,44 22,32" fill="#F2C6CC"/>
+</svg>

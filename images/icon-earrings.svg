@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="t3 d3">
+  <title id="t3">Earrings icon</title>
+  <desc id="d3">A simple line drawing of a pair of drop earrings</desc>
+  <circle cx="38" cy="24" r="6" fill="none" stroke="#3A3630" stroke-width="3"/>
+  <line x1="38" y1="30" x2="38" y2="50" stroke="#3A3630" stroke-width="2.5"/>
+  <circle cx="38" cy="62" r="12" fill="#C7DCE8" stroke="#3A3630" stroke-width="3"/>
+  <circle cx="82" cy="24" r="6" fill="none" stroke="#3A3630" stroke-width="3"/>
+  <line x1="82" y1="30" x2="82" y2="50" stroke="#3A3630" stroke-width="2.5"/>
+  <circle cx="82" cy="62" r="12" fill="#F2C6CC" stroke="#3A3630" stroke-width="3"/>
+</svg>

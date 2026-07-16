@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PLACEHOLDER DOMAIN NOTICE:
+  https://www.cjjewellery.example.com/ is a placeholder using the reserved
+  "example.com" domain. It does not point anywhere real. Once a real domain
+  has been purchased for C J Jewellery, replace every URL below (and the
+  matching ones in index.html and robots.txt) with the real address.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.cjjewellery.example.com/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

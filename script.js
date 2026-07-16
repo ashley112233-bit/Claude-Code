@@ -1,166 +1,308 @@
 (function () {
-  "use strict";
+  'use strict';
 
-  /* ---------------------------------------------------
-     Interactive player-journey demonstration.
-     Visual demonstration only: nothing selected here is
-     stored, saved or transmitted anywhere.
-  --------------------------------------------------- */
+  /* ---------- Footer year ---------- */
+  var yearEl = document.getElementById('copyrightYear');
+  if (yearEl) {
+    yearEl.textContent = String(new Date().getFullYear());
+  }
 
-  var questions = [
-    {
-      text: "How did the surface feel during this match?",
-      options: ["Slow", "Medium", "Fast", "Not sure"]
-    },
-    {
-      text: "Did lighting affect ball visibility?",
-      options: ["No", "Slightly", "Significantly", "Not sure"]
-    },
-    {
-      text: "Did the roof interfere with play?",
-      options: ["Never", "Occasionally", "Frequently", "Not sure"]
-    }
-  ];
+  /* ---------- Mobile navigation ---------- */
+  var navToggle = document.getElementById('navToggle');
+  var primaryNav = document.getElementById('primaryNav');
 
-  var ANSWERED_HEADING = "Thank you. Your answer will contribute to aggregated court information.";
-  var ANSWERED_DETAIL = "Individual answers are never published or shown to the venue. Over a full pilot, responses like this build into the aggregated court picture shown below.";
-  var SKIPPED_HEADING = "No problem — that's fine.";
-  var SKIPPED_DETAIL = "The question is optional. You can always answer next time, and skipping is recorded no differently to any other response.";
+  function closeNav() {
+    if (!primaryNav || !navToggle) return;
+    primaryNav.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }
 
-  var currentQuestionIndex = 0;
+  function openNav() {
+    if (!primaryNav || !navToggle) return;
+    primaryNav.classList.add('is-open');
+    navToggle.setAttribute('aria-expanded', 'true');
+  }
 
-  var stage1 = document.querySelector('[data-stage="1"]');
-  var stage2 = document.querySelector('[data-stage="2"]');
-  var stage3 = document.querySelector('[data-stage="3"]');
-  var questionHeading = document.getElementById("demo-question");
-  var optionsContainer = document.getElementById("demo-options");
-  var startButton = document.getElementById("demo-start");
-  var skipButton = document.getElementById("demo-skip");
-  var anotherButton = document.getElementById("demo-another");
-  var resultHeading = document.getElementById("demo-result-heading");
-  var resultDetail = document.getElementById("demo-result-detail");
-  var stepIndicators = document.querySelectorAll("[data-step-indicator]");
-
-  function setActiveStep(stepNumber) {
-    stepIndicators.forEach(function (el) {
-      var isActive = el.getAttribute("data-step-indicator") === String(stepNumber);
-      el.style.borderColor = isActive ? "var(--turquoise-dark)" : "";
-      el.style.color = isActive ? "var(--navy)" : "";
-      el.style.fontWeight = isActive ? "700" : "";
+  if (navToggle && primaryNav) {
+    navToggle.addEventListener('click', function () {
+      var isOpen = navToggle.getAttribute('aria-expanded') === 'true';
+      if (isOpen) {
+        closeNav();
+      } else {
+        openNav();
+      }
     });
-  }
 
-  function showStage(stage) {
-    [stage1, stage2, stage3].forEach(function (el) {
-      if (!el) return;
-      el.hidden = el !== stage;
+    primaryNav.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', closeNav);
     });
-  }
 
-  function renderQuestion() {
-    var question = questions[currentQuestionIndex];
-    if (!questionHeading || !optionsContainer) return;
-
-    questionHeading.textContent = question.text;
-    optionsContainer.innerHTML = "";
-
-    question.options.forEach(function (optionLabel) {
-      var button = document.createElement("button");
-      button.type = "button";
-      button.className = "demo-option";
-      button.textContent = optionLabel;
-      button.addEventListener("click", function () {
-        showResult(false);
-      });
-      optionsContainer.appendChild(button);
-    });
-  }
-
-  function showResult(wasSkipped) {
-    if (resultHeading) resultHeading.textContent = wasSkipped ? SKIPPED_HEADING : ANSWERED_HEADING;
-    if (resultDetail) resultDetail.textContent = wasSkipped ? SKIPPED_DETAIL : ANSWERED_DETAIL;
-    showStage(stage3);
-    setActiveStep(3);
-    if (resultHeading) resultHeading.focus();
-  }
-
-  if (startButton) {
-    startButton.addEventListener("click", function () {
-      renderQuestion();
-      showStage(stage2);
-      setActiveStep(2);
-    });
-  }
-
-  if (skipButton) {
-    skipButton.addEventListener("click", function () {
-      showResult(true);
-    });
-  }
-
-  if (anotherButton) {
-    anotherButton.addEventListener("click", function () {
-      currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
-      showStage(stage1);
-      setActiveStep(1);
-    });
-  }
-
-  setActiveStep(1);
-
-  /* ---------------------------------------------------
-     Contact modal: opens on button click, closes via
-     close button, backdrop click or the Escape key.
-  --------------------------------------------------- */
-
-  var openModalButton = document.getElementById("open-contact-modal");
-  var closeModalButton = document.getElementById("close-contact-modal");
-  var modalBackdrop = document.getElementById("contact-modal-backdrop");
-  var modal = document.getElementById("contact-modal");
-  var lastFocusedElement = null;
-
-  function openModal() {
-    if (!modalBackdrop) return;
-    lastFocusedElement = document.activeElement;
-    modalBackdrop.hidden = false;
-    if (closeModalButton) closeModalButton.focus();
-    document.addEventListener("keydown", handleModalKeydown);
-  }
-
-  function closeModal() {
-    if (!modalBackdrop) return;
-    modalBackdrop.hidden = true;
-    document.removeEventListener("keydown", handleModalKeydown);
-    if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
-      lastFocusedElement.focus();
-    }
-  }
-
-  function handleModalKeydown(event) {
-    if (event.key === "Escape") {
-      closeModal();
-    }
-  }
-
-  if (openModalButton) {
-    openModalButton.addEventListener("click", openModal);
-  }
-
-  if (closeModalButton) {
-    closeModalButton.addEventListener("click", closeModal);
-  }
-
-  if (modalBackdrop) {
-    modalBackdrop.addEventListener("click", function (event) {
-      if (event.target === modalBackdrop) {
-        closeModal();
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closeNav();
       }
     });
   }
 
-  if (modal) {
-    modal.addEventListener("click", function (event) {
-      event.stopPropagation();
+  /* ---------- Generic focus-trapping dialog helper ---------- */
+  function getFocusable(container) {
+    return Array.prototype.slice.call(
+      container.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])')
+    );
+  }
+
+  function trapFocus(container, event) {
+    if (event.key !== 'Tab') return;
+    var focusable = getFocusable(container);
+    if (focusable.length === 0) return;
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  /* ---------- Lightbox ---------- */
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImage = document.getElementById('lightboxImage');
+  var lightboxTitle = document.getElementById('lightboxTitle');
+  var lightboxDesc = document.getElementById('lightboxDesc');
+  var lastFocusedBeforeLightbox = null;
+
+  function openLightbox(trigger) {
+    var img = trigger.getAttribute('data-lightbox-img');
+    var title = trigger.getAttribute('data-lightbox-title') || '';
+    var desc = trigger.getAttribute('data-lightbox-desc') || '';
+
+    lightboxImage.src = img;
+    lightboxImage.alt = title;
+    lightboxTitle.textContent = title;
+    lightboxDesc.textContent = desc;
+
+    lastFocusedBeforeLightbox = document.activeElement;
+    lightbox.hidden = false;
+    document.body.style.overflow = 'hidden';
+
+    var closeBtn = lightbox.querySelector('.lightbox__close');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.hidden = true;
+    lightboxImage.src = '';
+    document.body.style.overflow = '';
+    if (lastFocusedBeforeLightbox) {
+      lastFocusedBeforeLightbox.focus();
+    }
+  }
+
+  if (lightbox) {
+    document.querySelectorAll('[data-lightbox-img]').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        openLightbox(trigger);
+      });
+    });
+
+    lightbox.querySelectorAll('[data-close-lightbox]').forEach(function (el) {
+      el.addEventListener('click', closeLightbox);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (lightbox.hidden) return;
+      if (event.key === 'Escape') {
+        closeLightbox();
+      } else {
+        trapFocus(lightbox.querySelector('.lightbox__dialog'), event);
+      }
+    });
+  }
+
+  /* ---------- Privacy / Accessibility modals ---------- */
+  var modalTriggers = {
+    openPrivacy: 'privacyModal',
+    openAccessibility: 'accessibilityModal'
+  };
+  var lastFocusedBeforeModal = null;
+
+  function openModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (!modal) return;
+    lastFocusedBeforeModal = document.activeElement;
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    var closeBtn = modal.querySelector('.modal__close');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (!modal) return;
+    modal.hidden = true;
+    document.body.style.overflow = '';
+    if (lastFocusedBeforeModal) {
+      lastFocusedBeforeModal.focus();
+    }
+  }
+
+  Object.keys(modalTriggers).forEach(function (triggerId) {
+    var trigger = document.getElementById(triggerId);
+    if (!trigger) return;
+    trigger.addEventListener('click', function () {
+      openModal(modalTriggers[triggerId]);
+    });
+  });
+
+  document.querySelectorAll('[data-close-modal]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      closeModal(el.getAttribute('data-close-modal'));
+    });
+  });
+
+  document.addEventListener('keydown', function (event) {
+    var openModalEl = document.querySelector('.modal:not([hidden])');
+    if (!openModalEl) return;
+    if (event.key === 'Escape') {
+      closeModal(openModalEl.id);
+    } else {
+      trapFocus(openModalEl.querySelector('.modal__dialog'), event);
+    }
+  });
+
+  /* ---------- Enquiry form ---------- */
+  var form = document.getElementById('enquiryForm');
+  var formStatus = document.getElementById('formStatus');
+
+  function setError(fieldId, message) {
+    var errorEl = document.getElementById('err-' + fieldId);
+    if (errorEl) errorEl.textContent = message || '';
+  }
+
+  function clearAllErrors() {
+    form.querySelectorAll('.field-error').forEach(function (el) {
+      el.textContent = '';
+    });
+  }
+
+  function showStatus(message, isError) {
+    formStatus.textContent = message;
+    formStatus.classList.add('is-visible');
+    formStatus.classList.toggle('is-error', !!isError);
+  }
+
+  function validate(data) {
+    var valid = true;
+    var firstInvalid = null;
+
+    function fail(fieldId, message, el) {
+      setError(fieldId, message);
+      valid = false;
+      if (!firstInvalid) firstInvalid = el;
+    }
+
+    if (!data.fullName.trim()) {
+      fail('fullName', 'Please enter your name.', form.elements['fullName']);
+    }
+
+    var emailValue = data.email.trim();
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailValue) {
+      fail('email', 'Please enter your email address.', form.elements['email']);
+    } else if (!emailPattern.test(emailValue)) {
+      fail('email', 'Please enter a valid email address.', form.elements['email']);
+    }
+
+    if (!data.jewelleryType) {
+      fail('jewelleryType', 'Please choose a type of jewellery.', form.elements['jewelleryType']);
+    }
+
+    if (!data.orderType) {
+      fail('orderType', 'Please choose ready-made or bespoke.', form.querySelector('input[name="orderType"]'));
+    }
+
+    if (!data.budget) {
+      fail('budget', 'Please choose a budget range.', form.elements['budget']);
+    }
+
+    if (!data.consent) {
+      fail('consent', 'Please confirm you are happy for us to use these details to reply.', form.elements['consent']);
+    }
+
+    return { valid: valid, firstInvalid: firstInvalid };
+  }
+
+  function buildEmailBody(data) {
+    var lines = [
+      'New enquiry from the C J Jewellery website',
+      '',
+      'Name: ' + data.fullName,
+      'Email: ' + data.email,
+      'Telephone: ' + (data.telephone || 'Not provided'),
+      'Type of jewellery: ' + data.jewelleryType,
+      'Ready-made or bespoke: ' + data.orderType,
+      'Preferred colours or style: ' + (data.stylePrefs || 'Not provided'),
+      'Wrist size / measurements: ' + (data.measurements || 'Not provided'),
+      'Budget: ' + data.budget,
+      'Required by: ' + (data.requiredDate || 'Not specified'),
+      '',
+      'Message:',
+      data.message || '(No message added)'
+    ];
+    return lines.join('\n');
+  }
+
+  if (form) {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      clearAllErrors();
+      formStatus.classList.remove('is-visible', 'is-error');
+
+      var formData = new FormData(form);
+
+      // Honeypot check: if this hidden field has been filled in, quietly stop.
+      if (formData.get('website')) {
+        return;
+      }
+
+      var data = {
+        fullName: formData.get('fullName') || '',
+        email: formData.get('email') || '',
+        telephone: formData.get('telephone') || '',
+        jewelleryType: formData.get('jewelleryType') || '',
+        orderType: formData.get('orderType') || '',
+        stylePrefs: formData.get('stylePrefs') || '',
+        measurements: formData.get('measurements') || '',
+        budget: formData.get('budget') || '',
+        requiredDate: formData.get('requiredDate') || '',
+        message: formData.get('message') || '',
+        consent: formData.get('consent') === 'on'
+      };
+
+      var result = validate(data);
+      if (!result.valid) {
+        showStatus('Please check the highlighted fields and try again.', true);
+        if (result.firstInvalid) result.firstInvalid.focus();
+        return;
+      }
+
+      var subject = 'C J Jewellery enquiry';
+      var body = buildEmailBody(data);
+      var mailtoUrl = 'mailto:cmjosephs@gmail.com'
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(body);
+
+      window.location.href = mailtoUrl;
+
+      showStatus(
+        'Your email application should now have opened with your enquiry ready to send. ' +
+        'Please check the message and press send from your own email application. ' +
+        'If nothing opened, please email cmjosephs@gmail.com directly.',
+        false
+      );
     });
   }
 })();
