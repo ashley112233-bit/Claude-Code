@@ -21,7 +21,7 @@ by dragging index.html into Safari.
 
 2. ABOUT THE PRODUCT PHOTOGRAPHS AND THE LOGO
 ------------------------------------------------
-Five real product photographs were supplied and are now used on the site:
+Six real product photographs were supplied and are now used on the site:
 
   - images/necklace-trio.jpg      A pearl necklace with two beaded necklaces
                                    (necklace gallery card)
@@ -32,6 +32,9 @@ Five real product photographs were supplied and are now used on the site:
   - images/bracelet-pearl-display.jpg A pearl bracelet displayed with a
                                    C J Jewellery card (featured bracelet
                                    card, and the hero photo's companion)
+  - images/bracelet-personalised.jpg  A cream beaded bracelet personalised
+                                   with letter beads and a heart charm
+                                   (bracelet gallery card)
   - images/hero-bracelet.jpg      A pearl bracelet, ribbon and roses — used
                                    as the main hero photograph
 
@@ -43,34 +46,26 @@ the site. Earrings still use a simple line-art icon, as no earring
 photograph was supplied — this is intentional (see the brief's instruction
 not to invent product photography that wasn't provided).
 
-No clean, flat logo file (a plain PNG/SVG with a transparent or plain
-background) has been supplied — only photographs of the logo as printed on
-a branded card. Using a photographed, angled logo as the site's working
-logo (header, footer, favicon) would mean stretching or redrawing it,
-which the brief specifically asks not to do. So:
+The real logo has also now been supplied as a clean, flat file (the "CJ"
+monogram with a small diamond on a watercolour blush/blue background) and
+is used throughout the site at its correct proportions, with no
+stretching or redrawing:
 
-  - images/logo.svg remains an original, simple wordmark-and-diamond mark
-    used for navigation, the favicon and the footer. It is not a copy of
-    your real logo (a "CJ" monogram with a small diamond and a watercolour
-    blush/blue background) — it is a placeholder in the same colour
-    family.
-  - images/logo-card-photo.jpg is a cropped photograph of your real logo
-    as it appears on a branded card, used once on the page (in the
-    Bespoke section) purely as an honest supporting photo, not as the
-    working site logo.
+  - images/logo.png is the working site logo — used in the header, the
+    hero section and the footer (in the footer it sits on a small cream
+    card so it stays readable against the dark background).
+  - favicon.png and apple-touch-icon.png are cropped from the same logo
+    (just the "CJ" monogram and diamond, without the smaller wordmark
+    text, since that would be unreadable at browser-tab size).
+  - images/logo-card-photo.jpg is a separate, real photograph of the logo
+    as printed on a branded card, used once on the page (in the Bespoke
+    section) as an honest supporting photo alongside the working logo.
 
-If you can supply a clean, flat copy of the real logo (exported from
-whatever design tool made it, ideally as a PNG with a transparent
-background or an SVG), it can replace images/logo.svg directly and will
-then be used correctly throughout the site — search index.html for
-"images/logo.svg" to find the three places it is used (header, hero,
-footer).
-
-If you'd like to add more product photographs later (more bracelets,
-necklace close-ups, or earrings once you have them), save them into the
-images folder with short, web-safe file names (letters, numbers and
-hyphens only, no spaces), then add a new gallery card in index.html
-following the pattern of the existing ones in the section commented
+If you'd like to add more product photographs later (necklace or earring
+close-ups once you have them), save them into the images folder with
+short, web-safe file names (letters, numbers and hyphens only, no
+spaces), then add a new gallery card in index.html following the pattern
+of the existing ones in the section commented
 "<!-- 3. JEWELLERY GALLERY -->".
 
 
@@ -150,7 +145,7 @@ To put this website on the internet, you will need:
   2. A normal web hosting account (many hosts offer simple UK-priced
      packages for static sites — no database is required for this site).
   3. To upload every file and folder in this project (index.html,
-     styles.css, script.js, the images folder, favicon.svg, favicon.png,
+     styles.css, script.js, the images folder, favicon.png,
      apple-touch-icon.png, 404.html, robots.txt and sitemap.xml) to the
      hosting account, usually via the host's file manager or FTP/SFTP.
   4. To update the placeholder domain (see section 4 above) to your real
@@ -174,14 +169,14 @@ and does not need to be uploaded.
   404.html                        Shown if a visitor reaches a broken link
   robots.txt                      Search engine crawling instructions
   sitemap.xml                     Search engine sitemap (placeholder domain)
-  favicon.svg / favicon.png       Browser tab icon
+  favicon.png                     Browser tab icon (cropped from the logo)
   apple-touch-icon.png            Icon used if a visitor saves the site
                                    to their phone's home screen
   README.txt                      This file
   Open C J Jewellery.command      Double-click to preview on a Mac
-  images/                         Logo, photographs and gallery icons
-    logo.svg                      Placeholder wordmark used in header,
-                                   hero and footer (see section 2 above)
+  images/                         Logo and product photographs
+    logo.png                      The real logo — used in header, hero
+                                   and footer
     logo-card-photo.jpg           Photo of the real logo on a branded card
     icon-earrings.svg             Earrings gallery icon (no photo supplied)
     hero-bracelet.jpg             Hero photograph
@@ -189,5 +184,6 @@ and does not need to be uploaded.
     bracelet-pearl-wrist.jpg      Bracelet gallery photograph
     bracelet-duo-wrist.jpg        Bracelet gallery photograph
     bracelet-pearl-display.jpg    Featured bracelet gallery photograph
+    bracelet-personalised.jpg     Personalised bracelet gallery photograph
     og-image.jpg                  Image used when the site is shared on
                                    social media

@@ -21,7 +21,6 @@
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
@@ -37,7 +36,7 @@
   "@type": "Organization",
   "name": "C J Jewellery",
   "url": "https://www.cjjewellery.example.com/",
-  "logo": "images/logo.svg",
+  "logo": "images/logo.png",
   "email": "cmjosephs@gmail.com",
   "description": "Handmade bracelets, necklaces and earrings, ready-made or made to order, with UK delivery available.",
   "areaServed": "GB",
@@ -52,7 +51,7 @@
 <header class="site-header" id="top">
   <div class="container site-header__inner">
     <a class="site-header__brand" href="#home">
-      <img src="images/logo.svg" alt="C J Jewellery" class="site-header__logo" width="240" height="65">
+      <img src="images/logo.png" alt="C J Jewellery" class="site-header__logo" width="640" height="640">
     </a>
 
     <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav">
@@ -82,7 +81,7 @@
   <section class="hero" id="home" aria-label="Welcome">
     <div class="container hero__inner">
       <div class="hero__content">
-        <img src="images/logo.svg" alt="C J Jewellery" class="hero__logo" width="300" height="82">
+        <img src="images/logo.png" alt="C J Jewellery" class="hero__logo" width="640" height="640">
         <h1>Handmade jewellery, created with care</h1>
         <p class="hero__lead">
           Discover bracelets, necklaces and earrings made by Celia. Choose from ready-made pieces
@@ -171,6 +170,19 @@
             <span class="gallery-card__body">
               <span class="gallery-card__title">Colourful bracelets</span>
               <span class="gallery-card__desc">A mix of colours and bead styles, ready-made or bespoke.</span>
+            </span>
+          </button>
+
+          <button type="button" class="gallery-card"
+                  data-lightbox-img="images/bracelet-personalised.jpg"
+                  data-lightbox-title="Personalised bracelets"
+                  data-lightbox-desc="A cream beaded bracelet personalised with letter beads and a small heart charm. Letters, names and charms can be added to a bracelet of your choice.">
+            <span class="gallery-card__media gallery-card__media--photo">
+              <img src="images/bracelet-personalised.jpg" alt="A cream beaded bracelet personalised with letter beads and a small gold heart charm" width="591" height="900" loading="lazy">
+            </span>
+            <span class="gallery-card__body">
+              <span class="gallery-card__title">Personalised bracelets</span>
+              <span class="gallery-card__desc">Add letters, a name or a charm that means something to you.</span>
             </span>
           </button>
 
@@ -430,7 +442,9 @@
 
 <footer class="site-footer">
   <div class="container site-footer__inner">
-    <img src="images/logo.svg" alt="C J Jewellery" class="site-footer__logo" width="200" height="54">
+    <span class="site-footer__logo-wrap">
+      <img src="images/logo.png" alt="C J Jewellery" class="site-footer__logo" width="640" height="640">
+    </span>
     <p class="site-footer__tagline">Handmade jewellery created with care</p>
     <p><a href="mailto:cmjosephs@gmail.com">cmjosephs@gmail.com</a></p>
     <p>UK delivery available</p>
