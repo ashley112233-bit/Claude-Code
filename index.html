@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Padel Court Check — Partner Preview</title>
+<meta name="description" content="Private partner preview: a proposed court-condition intelligence layer for padel booking platforms.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- 1. Slim confidentiality bar -->
+<div class="confidential-bar">
+  <div class="confidential-bar__inner">
+    <p class="confidential-bar__text">
+      <span class="confidential-bar__badge">Private Partner Preview</span>
+      <span class="confidential-bar__divider" aria-hidden="true">·</span>
+      <span>Proposed UK pilot</span>
+    </p>
+    <a class="btn btn-mini" href="#pilot">View pilot proposal</a>
+  </div>
+</div>
+
+<header class="hero" id="hero">
+  <div class="hero__court-lines" aria-hidden="true"></div>
+  <div class="container hero__inner">
+    <div class="hero__content">
+      <p class="wordmark">Padel Court Check</p>
+      <h1 class="hero__headline">Turn every score confirmation into court intelligence.</h1>
+      <p class="hero__supporting">
+        One short, rotating question after a match could build a court-by-court picture of surface
+        speed, lighting, roof interference and playing conditions — without asking players to write
+        public reviews.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn-primary" href="#player-journey">See the player journey</a>
+        <a class="btn btn-secondary" href="#pilot">Explore the pilot</a>
+      </div>
+    </div>
+
+    <div class="hero__mockup" aria-hidden="true">
+      <div class="phone-frame">
+        <div class="phone-frame__notch"></div>
+        <div class="app-mock">
+          <p class="app-mock__label">Match summary</p>
+          <h2 class="app-mock__title">Result confirmed</h2>
+          <div class="app-mock__score-row">
+            <div class="app-mock__team">
+              <span class="app-mock__name">Team A</span>
+              <span class="app-mock__score">6&nbsp;·&nbsp;6</span>
+            </div>
+            <span class="app-mock__vs">vs</span>
+            <div class="app-mock__team">
+              <span class="app-mock__name">Team B</span>
+              <span class="app-mock__score">3&nbsp;·&nbsp;4</span>
+            </div>
+          </div>
+          <dl class="app-mock__details">
+            <div><dt>Venue</dt><dd>Riverside Padel Club</dd></div>
+            <div><dt>Court</dt><dd>Court 2</dd></div>
+            <div><dt>Time</dt><dd>18:30 – 19:30</dd></div>
+          </dl>
+          <div class="app-mock__confirmed-btn">Result confirmed ✓</div>
+          <div class="app-mock__prompt">
+            <p>Got 10 seconds? One quick question about the court.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- 2. The missing information -->
+  <section class="section" id="missing-information" aria-labelledby="missing-information-heading">
+    <div class="container">
+      <h2 id="missing-information-heading">The missing information</h2>
+      <p class="section-lede">Booking platforms already capture a great deal about a match. They capture very little about the court itself.</p>
+
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h3>Booking data already shows</h3>
+          <ul class="check-list">
+            <li>Venue and court</li>
+            <li>Booking time</li>
+            <li>Match format</li>
+            <li>Player level</li>
+            <li>Match completion and result</li>
+          </ul>
+        </div>
+        <div class="compare-card compare-card--accent">
+          <h3>Court intelligence could add</h3>
+          <ul class="check-list check-list--accent">
+            <li>Perceived surface speed</li>
+            <li>Natural and artificial-light interference</li>
+            <li>Roof interference</li>
+            <li>Wind and environmental effects</li>
+            <li>How conditions vary by broad time period</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="callout">Booking data shows what happened. Court intelligence adds how the court played.</p>
+    </div>
+  </section>
+
+  <!-- 3. Interactive player journey -->
+  <section class="section section--muted" id="player-journey" aria-labelledby="player-journey-heading">
+    <div class="container">
+      <h2 id="player-journey-heading">The player journey</h2>
+      <p class="section-lede">A working demonstration of how one rotating question could sit inside an existing score-confirmation flow. This is a visual demonstration only — nothing you select here is stored or transmitted.</p>
+
+      <div class="demo" role="group" aria-labelledby="player-journey-heading">
+        <ol class="demo__steps" aria-hidden="true">
+          <li class="demo__step" data-step-indicator="1">1. Score confirmed</li>
+          <li class="demo__step" data-step-indicator="2">2. One quick question</li>
+          <li class="demo__step" data-step-indicator="3">3. Recorded for aggregation</li>
+        </ol>
+
+        <div class="demo__card" aria-live="polite">
+
+          <div class="demo__stage" data-stage="1">
+            <p class="demo__eyebrow">Stage 1 of 3</p>
+            <h3>Your result has been confirmed</h3>
+            <p>Riverside Padel Club · Court 2 · 18:30</p>
+            <button type="button" class="btn btn-primary" id="demo-start">Score confirmed</button>
+          </div>
+
+          <div class="demo__stage" data-stage="2" hidden>
+            <p class="demo__eyebrow">Stage 2 of 3</p>
+            <h3 id="demo-question"></h3>
+            <div class="demo__options" id="demo-options"></div>
+          </div>
+
+          <div class="demo__stage" data-stage="3" hidden>
+            <p class="demo__eyebrow">Stage 3 of 3</p>
+            <h3 tabindex="-1">Thank you — response recorded for aggregation</h3>
+            <p>In a real pilot, this single answer would be combined with others for this court over time. It would not be shown to the venue on its own.</p>
+          </div>
+
+        </div>
+
+        <button type="button" class="btn btn-ghost" id="demo-another">Show another example</button>
+      </div>
+
+      <p class="note">A real pilot could rotate between a small set of short questions rather than presenting a long form after every match.</p>
+    </div>
+  </section>
+
+  <!-- 4. What the booking platform could gain -->
+  <section class="section" id="benefits" aria-labelledby="benefits-heading">
+    <div class="container">
+      <h2 id="benefits-heading">What the booking platform could gain</h2>
+      <p class="section-lede">A successful integration could, over time and subject to partner agreement, help a booking platform do the following. None of this has yet been proven.</p>
+
+      <div class="benefit-grid">
+        <div class="benefit-card">
+          <span class="benefit-card__icon" aria-hidden="true"></span>
+          <h3>Differentiate the platform</h3>
+          <p>Add a court-condition feature that competitors may not offer.</p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-card__icon" aria-hidden="true"></span>
+          <h3>Add court-level data</h3>
+          <p>Build an aggregated picture of how individual courts play at different times, for use where court selection is available.</p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-card__icon" aria-hidden="true"></span>
+          <h3>Support participating venues</h3>
+          <p>Give venues structured, aggregated evidence about court conditions rather than isolated complaints.</p>
+        </div>
+        <div class="benefit-card">
+          <span class="benefit-card__icon" aria-hidden="true"></span>
+          <h3>Test without a major build</h3>
+          <p>Explore the concept through a small, bounded pilot rather than an internal engineering commitment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Privacy-preserving concept -->
+  <section class="section section--muted" id="privacy" aria-labelledby="privacy-heading">
+    <div class="container">
+      <h2 id="privacy-heading">A privacy-preserving, aggregated court intelligence concept</h2>
+      <p class="section-lede">The proposed flow is designed to keep individual answers separate from public identity, and to report on courts in aggregate rather than on individual players or matches.</p>
+
+      <div class="flow" role="list">
+        <div class="flow__step" role="listitem">
+          <span class="flow__number">1</span>
+          <p>Completed match</p>
+        </div>
+        <span class="flow__arrow" aria-hidden="true">→</span>
+        <div class="flow__step" role="listitem">
+          <span class="flow__number">2</span>
+          <p>One-time question</p>
+        </div>
+        <span class="flow__arrow" aria-hidden="true">→</span>
+        <div class="flow__step" role="listitem">
+          <span class="flow__number">3</span>
+          <p>Answers separated from public identity</p>
+        </div>
+        <span class="flow__arrow" aria-hidden="true">→</span>
+        <div class="flow__step" role="listitem">
+          <span class="flow__number">4</span>
+          <p>Aggregated court information</p>
+        </div>
+      </div>
+
+      <ul class="check-list privacy-list">
+        <li>No public written reviews.</li>
+        <li>No reviewer names shown.</li>
+        <li>Individual answers would not be exposed to venues.</li>
+        <li>No exact match details published.</li>
+        <li>Public information, if later agreed, would be aggregated rather than attributed to one match or player.</li>
+        <li>Technical roles, data ownership, retention and lawful processing would all need agreement before any pilot began.</li>
+      </ul>
+      <p class="disclaimer">This describes the intended approach, not a guarantee of complete or absolute anonymity. The precise privacy and data-sharing structure would be agreed jointly with the booking partner before a pilot.</p>
+    </div>
+  </section>
+
+  <!-- 6. Why players might use it -->
+  <section class="section" id="why-players" aria-labelledby="why-players-heading">
+    <div class="container">
+      <h2 id="why-players-heading">Why players might use it</h2>
+      <p class="section-lede">This is the least-tested part of the concept, and we say so plainly below. If it were useful to players, it might help them:</p>
+      <ul class="check-list">
+        <li>Learn how an unfamiliar court may play.</li>
+        <li>Compare morning and evening conditions.</li>
+        <li>Understand whether a surface is slow, medium or fast.</li>
+        <li>Make a more informed private booking where court choice exists.</li>
+      </ul>
+      <blockquote class="research-statement">
+        Player demand is the first question the pilot must test. We are not assuming that players will complete the interaction.
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- 7. Proposed limited pilot -->
+  <section class="section section--muted" id="pilot" aria-labelledby="pilot-heading">
+    <div class="container">
+      <h2 id="pilot-heading">Proposed limited pilot</h2>
+      <p class="section-lede">A deliberately small, bounded pilot, designed to be reviewed jointly and stopped or changed at any point.</p>
+
+      <div class="pilot-grid">
+        <div class="pilot-facts">
+          <ul class="fact-list">
+            <li><strong>5</strong> participating venues</li>
+            <li><strong>8</strong> weeks</li>
+            <li><strong>1</strong> UK region</li>
+            <li>A small rotating question set</li>
+            <li>No public written reviews</li>
+            <li>Aggregated reporting only</li>
+            <li>Joint review of player participation and venue response</li>
+            <li>No commitment to a national rollout</li>
+          </ul>
+        </div>
+
+        <div class="pilot-checklist">
+          <h3>Outcome checklist</h3>
+          <ul class="check-list">
+            <li>Do players respond?</li>
+            <li>Which questions generate useful information?</li>
+            <li>Do venues value the aggregate?</li>
+            <li>Does the interaction fit naturally after a match?</li>
+            <li>Can privacy and data roles be agreed satisfactorily?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Honest objections / FAQ -->
+  <section class="section" id="faq" aria-labelledby="faq-heading">
+    <div class="container">
+      <h2 id="faq-heading">Honest objections</h2>
+      <p class="section-lede">The questions a senior decision-maker would ask first — answered directly.</p>
+
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Why would a booking platform participate?</summary>
+          <p>To test whether specialist court-condition data adds useful platform and venue information. The pilot is designed to answer this rather than assume it.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Will venues see individual criticism?</summary>
+          <p>The concept uses structured answers and aggregated reporting. Individual written reviews are outside the proposed pilot.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What if players do not respond?</summary>
+          <p>The pilot should stop or change. Player participation is a go-or-no-go test.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Could this reduce court bookings?</summary>
+          <p>That risk must be tested. The service is intended to describe court characteristics and time-dependent conditions, not label courts as good or bad.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Who owns the resulting data?</summary>
+          <p>Ownership, permitted use, retention and access must be agreed contractually before any live data is collected.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Why not build this internally?</summary>
+          <p>The proposed value of Padel Court Check is specialist methodology, cross-venue analysis and operating focus. A pilot would test whether that is more useful than an internal feature.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Closing call to action -->
+  <section class="section section--cta" id="cta" aria-labelledby="cta-heading">
+    <div class="container cta__inner">
+      <h2 id="cta-heading">Help us test the question before anyone builds the answer.</h2>
+      <p class="cta__supporting">We are seeking one booking-platform partner to examine the player journey, privacy structure and value of a limited UK pilot.</p>
+      <div class="hero__actions">
+        <button type="button" class="btn btn-primary" id="open-contact-modal">Discuss a pilot</button>
+        <a class="btn btn-secondary" href="#player-journey">Review the player journey</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 11. Footer -->
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <p class="site-footer__brand">Padel Court Check</p>
+    <p>Concept under evaluation</p>
+    <p>Private and confidential. Shared solely to discuss a potential pilot.</p>
+    <p>No booking-platform or venue partnership is implied.</p>
+  </div>
+</footer>
+
+<!-- Contact modal -->
+<div class="modal-backdrop" id="contact-modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-heading" id="contact-modal">
+    <button type="button" class="modal__close" id="close-contact-modal" aria-label="Close dialog">&times;</button>
+    <h2 id="contact-modal-heading">Discuss a pilot</h2>
+    <p>This is a private, early-stage concept preview. If you would like to discuss the proposed pilot, please get in touch using the contact details supplied alongside this preview.</p>
+    <!--
+      FINAL CONTACT EMAIL GOES HERE.
+      Replace the placeholder line below with the real contact email address
+      before this page is shared with any partner. Do not leave a placeholder
+      address in a page that is actually sent out.
+    -->
+    <p class="modal__placeholder">Contact: [insert contact email here]</p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
