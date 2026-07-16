@@ -19,50 +19,59 @@ You can also open the website by double-clicking index.html directly, or
 by dragging index.html into Safari.
 
 
-2. AN IMPORTANT NOTE ABOUT THE SUPPLIED IMAGES
+2. ABOUT THE PRODUCT PHOTOGRAPHS AND THE LOGO
 ------------------------------------------------
-The logo file, the PDF and the six photographs listed in the project brief
-(the wordmark logo, the CJ Jewellery.pdf, the "Generated Image" files, and
-the photograph of a bracelet in its pouch) were not present anywhere in
-the working environment this website was built in, so they could not be
-opened, resized or used.
+Five real product photographs were supplied and are now used on the site:
 
-Rather than invent fake product photography, this first version uses:
+  - images/necklace-trio.jpg      A pearl necklace with two beaded necklaces
+                                   (necklace gallery card)
+  - images/bracelet-pearl-wrist.jpg   A pearl bracelet worn on the wrist
+                                   (bracelet gallery card)
+  - images/bracelet-duo-wrist.jpg     Two colourful beaded bracelets worn
+                                   together (bracelet gallery card)
+  - images/bracelet-pearl-display.jpg A pearl bracelet displayed with a
+                                   C J Jewellery card (featured bracelet
+                                   card, and the hero photo's companion)
+  - images/hero-bracelet.jpg      A pearl bracelet, ribbon and roses — used
+                                   as the main hero photograph
 
-  - An original wordmark, in the style described in the brief (serif
-    "C J Jewellery" text next to a simple diamond mark), built as a clean
-    SVG file: images/logo.svg
-  - A soft, abstract decorative background wash for the hero section,
-    generated from the brand colours: images/hero-wash.png
-  - Simple line-art icons representing bracelets, necklaces, earrings and
-    a gift pouch, used as honest, clearly non-photographic gallery cards:
-    images/icon-bracelet.svg, images/icon-necklace.svg,
-    images/icon-earrings.svg, images/icon-pouch.svg
-  - A branded Open Graph image for social sharing: images/og-image.png
+Each photo was cropped to reduce how much of the formal jewellery-shop
+backdrop is visible (glass display cases, showroom panelling), keeping the
+focus on the handmade piece itself, and compressed to keep the site quick
+to load. The originals are not altered — only resized copies are used on
+the site. Earrings still use a simple line-art icon, as no earring
+photograph was supplied — this is intentional (see the brief's instruction
+not to invent product photography that wasn't provided).
 
-Once you have the real files, replace them like this:
+No clean, flat logo file (a plain PNG/SVG with a transparent or plain
+background) has been supplied — only photographs of the logo as printed on
+a branded card. Using a photographed, angled logo as the site's working
+logo (header, footer, favicon) would mean stretching or redrawing it,
+which the brief specifically asks not to do. So:
 
-  - Save your real logo as images/logo.svg (preferred) or images/logo.png,
-    keeping its original proportions, and update the three <img> tags in
-    index.html that reference images/logo.svg (header, hero and footer)
-    if you change the file name.
-  - Save the photograph of the bracelet in its pouch as, for example,
-    images/bracelet-pouch.jpg, and in index.html find the gallery card
-    with the comment "Presented with care" (search for
-    "gallery-card--featured") and change its <img src="images/icon-pouch.svg">
-    to <img src="images/bracelet-pouch.jpg">, updating the alt text to
-    describe the photo.
-  - Add further bracelet, necklace and earring photographs the same way:
-    save them into the images folder with short, web-safe file names
-    (letters, numbers and hyphens only, no spaces), then swap the relevant
-    icon <img> tag for your photo and write accurate alt text.
-  - Compress large photos before adding them (aim for well under 500KB
-    each) so the site stays quick to load. On a Mac, Preview's
-    File > Export can reduce JPEG quality and file size.
+  - images/logo.svg remains an original, simple wordmark-and-diamond mark
+    used for navigation, the favicon and the footer. It is not a copy of
+    your real logo (a "CJ" monogram with a small diamond and a watercolour
+    blush/blue background) — it is a placeholder in the same colour
+    family.
+  - images/logo-card-photo.jpg is a cropped photograph of your real logo
+    as it appears on a branded card, used once on the page (in the
+    Bespoke section) purely as an honest supporting photo, not as the
+    working site logo.
 
-The site will keep working exactly as it does now while you do this —
-nothing needs to be rebuilt, you are simply swapping image files and the
-odd <img> tag.
+If you can supply a clean, flat copy of the real logo (exported from
+whatever design tool made it, ideally as a PNG with a transparent
+background or an SVG), it can replace images/logo.svg directly and will
+then be used correctly throughout the site — search index.html for
+"images/logo.svg" to find the three places it is used (header, hero,
+footer).
+
+If you'd like to add more product photographs later (more bracelets,
+necklace close-ups, or earrings once you have them), save them into the
+images folder with short, web-safe file names (letters, numbers and
+hyphens only, no spaces), then add a new gallery card in index.html
+following the pattern of the existing ones in the section commented
+"<!-- 3. JEWELLERY GALLERY -->".
 
 
 3. WHERE TO CHANGE THE EMAIL ADDRESS AND WORDING
@@ -170,12 +179,15 @@ and does not need to be uploaded.
                                    to their phone's home screen
   README.txt                      This file
   Open C J Jewellery.command      Double-click to preview on a Mac
-  images/                         Logo, icons and generated brand imagery
-    logo.svg                      Wordmark used in header, hero and footer
-    icon-bracelet.svg             Bracelet gallery icon
-    icon-necklace.svg             Necklace gallery icon
-    icon-earrings.svg             Earrings gallery icon
-    icon-pouch.svg                Gift pouch icon (featured bracelet card)
-    hero-wash.png                 Decorative hero background
-    og-image.png                  Image used when the site is shared on
+  images/                         Logo, photographs and gallery icons
+    logo.svg                      Placeholder wordmark used in header,
+                                   hero and footer (see section 2 above)
+    logo-card-photo.jpg           Photo of the real logo on a branded card
+    icon-earrings.svg             Earrings gallery icon (no photo supplied)
+    hero-bracelet.jpg             Hero photograph
+    necklace-trio.jpg             Necklace gallery photograph
+    bracelet-pearl-wrist.jpg      Bracelet gallery photograph
+    bracelet-duo-wrist.jpg        Bracelet gallery photograph
+    bracelet-pearl-display.jpg    Featured bracelet gallery photograph
+    og-image.jpg                  Image used when the site is shared on
                                    social media
