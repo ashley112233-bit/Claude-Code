@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Padel Schedule</title>
+    <meta name="description" content="Your upcoming padel matches." />
+
+    <!-- PWA / iPhone Home Screen -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Padel" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="icon" href="/icons/icon-192.png" />
+
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>🎾 Padel Schedule</h1>
+      <div class="actions">
+        <button id="refresh-btn" class="btn" aria-label="Refresh matches">
+          ↻ Refresh
+        </button>
+      </div>
+    </header>
+
+    <p id="status" class="status" aria-live="polite"></p>
+
+    <main id="matches" class="matches"></main>
+
+    <footer class="app-footer">
+      <span id="updated" class="updated"></span>
+    </footer>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
