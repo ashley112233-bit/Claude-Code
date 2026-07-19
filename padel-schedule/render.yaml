@@ -1,0 +1,17 @@
+# One-click deploy config for Render (https://render.com) — free tier.
+# In Render: New -> Blueprint -> connect this repo. Render reads this file,
+# builds the app, and asks you to paste your CALENDAR_ICS_URL. When it's live
+# you get an https://...onrender.com link to open on your iPhone.
+services:
+  - type: web
+    name: padel-schedule
+    runtime: node
+    rootDir: padel-schedule
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: CALENDAR_ICS_URL
+        sync: false # you paste this privately in the Render dashboard
+      - key: LOOKAHEAD_DAYS
+        value: 30

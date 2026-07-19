@@ -1,0 +1,188 @@
+/* Padel Schedule — simple, white, big text, iPhone-first */
+
+:root {
+  --green: #0a7d3c;
+  --ink: #111111;
+  --muted: #6b6b6b;
+  --line: #e6e6e6;
+  --card: #ffffff;
+  --bg: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+    "Segoe UI", Roboto, sans-serif;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+body {
+  /* Respect the iPhone notch / home indicator. */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 20px 8px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 5;
+}
+
+.app-header h1 {
+  font-size: 30px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green);
+  background: #f2f7f3;
+  border: 1px solid #d7e7dc;
+  border-radius: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  min-height: 46px;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.status {
+  padding: 4px 20px 0;
+  color: var(--muted);
+  font-size: 16px;
+  min-height: 20px;
+}
+
+.matches {
+  padding: 8px 20px 40px;
+}
+
+.group-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 26px 0 12px;
+  letter-spacing: -0.01em;
+}
+
+.group-title:first-child {
+  margin-top: 8px;
+}
+
+.match {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.match .title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.match .row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 19px;
+  margin: 4px 0;
+}
+
+.match .row .label {
+  color: var(--muted);
+  min-width: 62px;
+  font-size: 16px;
+}
+
+.match .time {
+  font-weight: 700;
+}
+
+.match .venue {
+  color: var(--ink);
+}
+
+.match-actions {
+  margin-top: 14px;
+}
+
+.maps-btn {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--green);
+  background: #f2f7f3;
+  border: 1px solid #d7e7dc;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.empty,
+.error {
+  text-align: center;
+  color: var(--muted);
+  font-size: 20px;
+  padding: 60px 20px;
+}
+
+.error {
+  color: #b00020;
+}
+
+.connect-btn {
+  display: inline-block;
+  margin-top: 18px;
+  text-decoration: none;
+  background: var(--green);
+  color: #fff;
+  font-weight: 800;
+  font-size: 19px;
+  padding: 14px 22px;
+  border-radius: 14px;
+}
+
+.app-footer {
+  padding: 0 20px 30px;
+}
+
+.updated {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.loading {
+  opacity: 0.5;
+}
