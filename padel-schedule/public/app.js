@@ -123,10 +123,11 @@ function render(matches) {
   }
 }
 
-function showConnect() {
+function showSetupNeeded() {
   els.matches.innerHTML =
-    '<div class="empty">Connect your Google Calendar to see your matches.' +
-    '<br><a class="connect-btn" href="/auth">Connect Google Calendar</a></div>';
+    '<div class="empty">No calendar link set yet.<br>' +
+    'Add your Google Calendar <strong>secret iCal address</strong> to ' +
+    '<code>CALENDAR_ICS_URL</code>, then Refresh.</div>';
 }
 
 function showError(message) {
@@ -146,9 +147,9 @@ async function load() {
   try {
     const res = await fetch('/api/matches', { cache: 'no-store' });
 
-    if (res.status === 401) {
+    if (res.status === 400) {
       els.status.textContent = '';
-      showConnect();
+      showSetupNeeded();
       return;
     }
     if (!res.ok) {

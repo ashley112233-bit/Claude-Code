@@ -1,141 +1,84 @@
 # 🎾 Padel Schedule
 
 A private, iPhone-first web app that shows **only your upcoming padel matches**
-— the ones added from **Playtomic** to your **Google Calendar**.
+from your **Google Calendar** (the ones synced from **Playtomic**).
 
 - Today's matches first, then tomorrow, then everything upcoming.
 - Shows date, start time, end time (when available), venue and event title.
 - **No past matches, no results** — just what's next.
 - **Refresh** and **Maps** buttons.
-- Installable to your iPhone Home Screen (looks and opens like a real app).
+- Installable to your iPhone Home Screen (opens full-screen like a real app).
 - Simple design: white background, big text.
 
-Everything runs locally on your Mac. Your calendar data and sign-in token
-never leave your machine.
+It reads your calendar through its built-in **private iCal link** — one link
+you copy from Google Calendar settings. **No Google sign-in, no Google Cloud
+setup.**
 
 ---
 
-## What you need
+## First: get your calendar's private link (do this once, on a computer)
 
-- A Mac with [Node.js](https://nodejs.org) 18 or newer.
-  Check with: `node --version`
-- A Google account whose Calendar receives your Playtomic bookings.
-- About 10 minutes for the one-time Google setup.
+1. Open [Google Calendar](https://calendar.google.com) on a computer.
+2. Hover the calendar that has your padel matches (left sidebar) → **⋮** →
+   **Settings and sharing**.
+3. Scroll to **Integrate calendar**.
+4. Copy the **"Secret address in iCal format"** — it ends in `.ics`.
 
----
+> Keep this link private — anyone who has it can read that calendar.
 
-## Step 1 — Get Google Calendar credentials (one time)
-
-The app reads your calendar through Google's official API, so Google needs to
-know it's you. This is free.
-
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
-2. Create a project (top bar → project dropdown → **New Project**). Name it
-   e.g. `Padel Schedule`. Select it once created.
-3. Enable the Calendar API:
-   **APIs & Services → Library** → search **"Google Calendar API"** →
-   **Enable**.
-4. Configure the consent screen:
-   **APIs & Services → OAuth consent screen** →
-   - User type: **External** → **Create**.
-   - App name: `Padel Schedule`, your email for support/developer contact →
-     **Save and Continue** through the remaining steps.
-   - On **Test users**, click **+ Add users** and add your own Google email.
-     (Leaving the app in "Testing" is fine — it's just for you.)
-5. Create the credentials:
-   **APIs & Services → Credentials → + Create Credentials → OAuth client ID**
-   - Application type: **Web application**.
-   - Name: `Padel Schedule`.
-   - Under **Authorized redirect URIs**, click **+ Add URI** and paste
-     exactly:
-     ```
-     http://localhost:3000/oauth2callback
-     ```
-   - **Create**. Copy the **Client ID** and **Client secret** shown.
+You'll paste this link in one place below. That's the only setup.
 
 ---
 
-## Step 2 — Set up the app on your Mac
+## Option A — Run it so it just lives on your iPhone (recommended)
 
-Open the **Terminal** app and run these commands one at a time.
+This puts the app on a **free** cloud host, so there's nothing to keep running
+on a computer. Your iPhone just opens a link.
+
+1. Go to [render.com](https://render.com) and sign up (free) — the "Sign up
+   with GitHub" button is easiest, since the code lives on GitHub.
+2. Click **New +** → **Blueprint**.
+3. Connect this repository. Render reads the included `render.yaml` and sets
+   everything up automatically.
+4. When it asks for the value of **`CALENDAR_ICS_URL`**, paste the secret iCal
+   link from above. Click **Apply** / **Create**.
+5. Wait ~1–2 minutes for it to build. Render gives you a link like
+   `https://padel-schedule-xxxx.onrender.com`.
+6. On your iPhone, open that link in **Safari** → tap **Share** →
+   **Add to Home Screen** → **Add**.
+
+You now have a **Padel** icon on your Home Screen. 🎉
+
+> Note: Render's free tier "sleeps" the app after a while idle, so the very
+> first tap after a long gap can take ~30 seconds to wake up. After that it's
+> instant. (Any always-on host works the same way — see "Other hosts" below.)
+
+---
+
+## Option B — Run it on your Mac
+
+Use this if you'd rather not deploy anything. The app runs on your Mac and
+your iPhone opens it over Wi-Fi (both on the same network, Mac running).
+
+You need [Node.js](https://nodejs.org) 18+ (`node --version` to check).
 
 ```bash
-# 1. Go into the project folder (adjust the path to where you saved it)
 cd padel-schedule
-
-# 2. Install dependencies
 npm install
-
-# 3. Create your local config from the example
-cp .env.example .env
-```
-
-Now open `.env` in a text editor and paste in the values from Step 1:
-
-```bash
-# Opens .env in TextEdit
-open -e .env
-```
-
-Fill in:
-
-```
-GOOGLE_CLIENT_ID=...your client id...
-GOOGLE_CLIENT_SECRET=...your client secret...
-```
-
-Save and close the file.
-
----
-
-## Step 3 — Run it
-
-```bash
+npm run setup          # creates your .env file
+open -e .env           # paste your secret iCal link into CALENDAR_ICS_URL, save
 npm start
 ```
 
-You'll see:
+Then:
 
-```
-🎾 Padel Schedule running at http://localhost:3000
-```
+- On your **Mac**, open <http://localhost:3000> to check it works.
+- To use it on your **iPhone** (same Wi-Fi, Mac running):
+  1. Find your Mac's IP: `ipconfig getifaddr en0`
+  2. On the iPhone open Safari → `http://YOUR-MAC-IP:3000`
+  3. **Share → Add to Home Screen**.
 
-**First run only — connect Google Calendar:**
-
-1. In your browser, go to <http://localhost:3000>.
-2. Click **Connect Google Calendar**.
-3. Sign in and allow read-only access to your calendar.
-   - If you see a "Google hasn't verified this app" screen, click
-     **Advanced → Go to Padel Schedule (unsafe)**. This is expected for a
-     personal app you built yourself; it's safe because it's your own app.
-4. You'll be redirected back and see your matches.
-
-The sign-in is saved to `token.json`, so you won't have to do this again.
-
-To stop the server, press **Ctrl + C** in the Terminal. To start it again
-later, just run `npm start` from the project folder.
-
----
-
-## Step 4 — Add to your iPhone Home Screen
-
-Your iPhone and Mac must be on the **same Wi-Fi network**.
-
-1. Find your Mac's local IP address:
-   ```bash
-   ipconfig getifaddr en0
-   ```
-   (e.g. `192.168.1.42`. If that prints nothing, try `en1`.)
-2. On your iPhone, open **Safari** and go to:
-   `http://YOUR-MAC-IP:3000` (e.g. `http://192.168.1.42:3000`).
-3. Tap the **Share** button → **Add to Home Screen** → **Add**.
-
-You'll now have a **Padel** icon on your Home Screen that opens full-screen,
-no address bar.
-
-> Tip: the app only works while `npm start` is running on your Mac and both
-> devices are on the same Wi-Fi. If you want it always available, keep the
-> Terminal running, or deploy it to a small always-on host.
+Stop the server with **Ctrl + C**; run `npm start` again to restart.
 
 ---
 
@@ -148,13 +91,16 @@ no address bar.
 
 ## How matches are detected
 
-Padel Schedule looks at your upcoming calendar events and keeps only those
-whose **title, description, or location** mentions **"Playtomic"** or
-**"padel"** (case-insensitive). Playtomic bookings synced to Google Calendar
-match automatically. Past events are never shown.
+Padel Schedule keeps only upcoming events whose **title, description, or
+location** mentions **"Playtomic"** or **"padel"** (case-insensitive).
+Playtomic bookings synced to Google Calendar match automatically. Past events
+are never shown. Recurring weekly games are expanded automatically.
 
-You can adjust the lookahead window and which calendar is read in `.env`
-(`LOOKAHEAD_DAYS`, `GOOGLE_CALENDAR_ID`).
+You can change the lookahead window with `LOOKAHEAD_DAYS` (default 30).
+
+> The private iCal feed is refreshed by Google periodically, so a
+> brand-new booking can take a little while to appear. For matches booked in
+> advance this is not noticeable.
 
 ---
 
@@ -162,11 +108,13 @@ You can adjust the lookahead window and which calendar is read in `.env`
 
 ```
 padel-schedule/
-├── server.js               Express server + Google Calendar API + filtering
+├── server.js               Express server: fetches the iCal feed, filters padel
 ├── package.json
-├── .env.example            Copy to .env and fill in your credentials
+├── render.yaml             One-click deploy config for Render (Option A)
+├── .env.example            Copy to .env and paste your calendar link (Option B)
 ├── .gitignore
 ├── scripts/
+│   ├── setup.js            `npm run setup` — creates your .env
 │   └── generate-icons.js   Regenerates the app icons (already committed)
 └── public/
     ├── index.html
@@ -179,25 +127,29 @@ padel-schedule/
 
 ---
 
+## Other hosts
+
+`render.yaml` targets Render, but the app is a plain Node/Express server — any
+host that runs Node works. Set one environment variable, `CALENDAR_ICS_URL`,
+and run `npm start`.
+
+---
+
 ## Privacy & security
 
-- Runs entirely on your Mac. Nothing is sent to any server except Google's
-  own Calendar API.
-- Uses **read-only** calendar access.
-- `.env` (your credentials) and `token.json` (your sign-in) are git-ignored
-  and never committed.
+- The only outside connection is fetching your own calendar's iCal link.
+- Your calendar link lives in `.env` (Option B) or the host's private env
+  settings (Option A) — `.env` is git-ignored and never committed.
+- Read-only: the app can't change anything in your calendar.
 
 ---
 
 ## Troubleshooting
 
-- **"Missing Google credentials" in the Terminal** — you haven't filled in
-  `.env`. Redo Step 2.
-- **`redirect_uri_mismatch`** — the redirect URI in Google Cloud must be
-  exactly `http://localhost:3000/oauth2callback` (and match
-  `GOOGLE_REDIRECT_URI` in `.env`).
-- **No matches showing** — confirm your Playtomic bookings actually appear in
-  the Google Calendar you're reading, that they're in the future, and that
-  their title/location contains "padel" or "Playtomic".
-- **Want to re-connect a different account** — delete `token.json` and reload
-  the app.
+- **"No calendar link set yet"** — `CALENDAR_ICS_URL` isn't set. On Render,
+  add it under the service's **Environment**. Locally, put it in `.env`.
+- **No matches showing** — confirm your Playtomic bookings appear in that
+  Google Calendar, are in the future, and that their title/location contains
+  "padel" or "Playtomic". A new booking may take a bit to appear (see above).
+- **First open is slow (Render free tier)** — the app was asleep; it wakes in
+  ~30 seconds, then stays fast.
