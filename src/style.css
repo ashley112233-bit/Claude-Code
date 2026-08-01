@@ -191,7 +191,9 @@ p { margin: 0; }
 }
 .cinematic__scene--final .cinematic__sub { color: var(--ink-soft); }
 .cinematic__logo {
-  width: clamp(120px, 14vw, 190px); margin: 0 auto 20px; opacity: 0; transform: translateY(18px) scale(0.92);
+  width: clamp(190px, 22vw, 300px); height: auto; aspect-ratio: 670 / 530;
+  object-fit: contain;
+  margin: 0 auto 22px; opacity: 0; transform: translateY(18px) scale(0.92);
 }
 .cinematic__ctas {
   margin-top: 2em; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
@@ -215,7 +217,17 @@ p { margin: 0; }
   position: absolute; left: 0; right: 0; bottom: 108px; z-index: 6;
   display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; padding: 0 var(--gutter);
   color: var(--pearl);
+  transition: color 0.6s var(--ease-soft);
 }
+/* The closing scene is a pale watercolour wash, so the outlined button has to
+   flip to ink or it disappears against it. */
+.cinematic.is-final .cinematic__persistent-ctas { color: var(--ink); }
+.cinematic.is-final .cinematic__nav,
+.cinematic.is-final .cinematic__playpause {
+  color: var(--ink); border-color: rgba(43, 38, 34, 0.35); background: rgba(255, 255, 255, 0.4);
+}
+.cinematic.is-final .cinematic__dash { background: rgba(43, 38, 34, 0.2); }
+.cinematic.is-final .cinematic__dash-fill { background: var(--ink); }
 
 .cinematic__nav {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 6;
@@ -280,17 +292,41 @@ p { margin: 0; }
   background: linear-gradient(180deg, rgba(20,17,14,0.5) 0%, rgba(20,17,14,0.24) 60%, transparent 100%);
   transition: background 0.4s var(--ease), backdrop-filter 0.4s var(--ease), padding 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
-.site-header__brand { display: block; line-height: 0; }
-.site-header__logo {
-  height: 46px; width: auto;
+.site-header__brand {
+  display: inline-flex; align-items: center; gap: 12px;
+  text-decoration: none; line-height: 1;
+}
+.site-header__mark {
+  height: 46px; width: auto; display: block;
   transition: height 0.4s var(--ease);
+  filter: drop-shadow(0 2px 8px rgba(20, 17, 14, 0.35));
+}
+.site-header__wordmark {
+  font-family: var(--font-display); font-weight: 500; font-size: 1.18rem;
+  letter-spacing: 0.06em; color: var(--pearl); white-space: nowrap;
+  text-shadow: 0 1px 12px rgba(20, 17, 14, 0.5);
+  transition: color 0.4s var(--ease), font-size 0.4s var(--ease);
 }
 .site-header.is-solid {
   background: rgba(250, 243, 234, 0.88); backdrop-filter: blur(14px);
   padding-top: 12px; padding-bottom: 12px;
   box-shadow: 0 8px 26px rgba(43,38,34,0.07);
 }
-.site-header.is-solid .site-header__logo { height: 40px; }
+.site-header.is-solid .site-header__mark { height: 38px; filter: none; }
+/* Over the pale closing scene the header needs ink text and no dark glow. */
+body:has(.cinematic.is-final) .site-header:not(.is-solid) .site-header__wordmark {
+  color: var(--ink); text-shadow: none;
+}
+body:has(.cinematic.is-final) .site-header:not(.is-solid) .site-header__mark { filter: none; }
+body:has(.cinematic.is-final) .site-header:not(.is-solid) { background: none; }
+body:has(.cinematic.is-final) .site-header:not(.is-solid) .nav-toggle { color: var(--ink); }
+.site-header.is-solid .site-header__wordmark {
+  color: var(--ink); text-shadow: none; font-size: 1.08rem;
+}
+@media (max-width: 560px) {
+  .site-header__wordmark { font-size: 1rem; }
+  .site-header__mark { height: 38px; }
+}
 
 .primary-nav ul { display: flex; align-items: center; gap: 34px; }
 .primary-nav a {
@@ -731,12 +767,19 @@ section { position: relative; }
    ========================================================= */
 .site-footer { background: #2c3338; color: var(--cream); padding: clamp(56px, 7vw, 84px) 0 30px; }
 .site-footer__top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 40px; margin-bottom: 50px; }
-.site-footer__logo { height: 44px; width: auto; filter: brightness(0) invert(1); opacity: 0.92; }
+/* No brightness/invert filter here — that would flatten the watercolour to a
+   white silhouette. The wash is light enough to read on the dark footer. */
+.site-footer__brand { display: inline-flex; align-items: center; gap: 13px; }
+.site-footer__logo { height: 48px; width: auto; display: block; }
+.site-footer__wordmark {
+  font-family: var(--font-display); font-weight: 500; font-size: 1.3rem;
+  letter-spacing: 0.06em; color: var(--pearl); white-space: nowrap;
+}
 .site-footer__tagline { font-family: var(--font-display); font-style: italic; font-size: 1.2rem; margin-top: 16px; max-width: 26ch; color: var(--pearl); }
 .site-footer__links { display: flex; gap: clamp(40px, 6vw, 90px); flex-wrap: wrap; }
 .site-footer__col h4 { font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(250,243,234,0.5); margin-bottom: 14px; font-family: var(--font-body); font-weight: 700; }
 .site-footer__col a, .site-footer__col p { display: block; color: var(--pearl); text-decoration: none; font-size: 0.94rem; margin-bottom: 8px; }
-.site-footer__col button.link-button { background: none; border: none; padding: 0; color: var(--pearl); font: inherit; font-size: 0.94rem; cursor: pointer; text-align: left; margin-bottom: 8px; }
+.site-footer__col button.link-button { display: block; background: none; border: none; padding: 0; color: var(--pearl); font: inherit; font-size: 0.94rem; cursor: pointer; text-align: left; margin-bottom: 8px; }
 .site-footer__bottom {
   border-top: 1px solid rgba(250,243,234,0.14); padding-top: 24px;
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;

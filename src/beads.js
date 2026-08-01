@@ -9,16 +9,18 @@
    photographs of individual beads exist, and inventing them from photos of
    finished pieces would misrepresent the product.
 
+   A real bracelet is roughly 8 inches with around 150 small beads, so that
+   is what the strand renders. At that count the beads must be blitted, not
+   drawn: building three canvas gradients per bead per frame (450 gradient
+   objects a frame) would stutter badly. Instead each bead type is painted
+   once into an offscreen sprite and then stamped with drawImage.
+
    SWAPPING IN REAL BEAD PHOTOGRAPHS LATER
    ---------------------------------------
-   Each bead already carries everything a photo needs: position, radius and
-   rotation. To use real cut-outs, load them once into an array of Image
-   objects and replace the body of drawBead() with a drawImage() call:
-
-       ctx.drawImage(img, -r, -r, r * 2, r * 2);
-
-   inside the existing translate/rotate transform. Nothing else has to
-   change — the threading motion, depth ordering and scrub all keep working.
+   The sprite approach is already the shape this needs. Load each photograph
+   into an Image and put it in the SPRITES map in place of the generated
+   canvas — drawBead() stamps whatever it finds there, so the threading
+   motion, depth ordering and scroll control keep working untouched.
    ========================================================================= */
 
 /* Deterministic PRNG so the composition is identical on every load. */
@@ -37,27 +39,24 @@ const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
-/* Point on a cubic bezier. */
-function bezierPoint(t, p0, p1, p2, p3) {
-  const mt = 1 - t;
-  const a = mt * mt * mt;
-  const b = 3 * mt * mt * t;
-  const c = 3 * mt * t * t;
-  const d = t * t * t;
-  return {
-    x: a * p0.x + b * p1.x + c * p2.x + d * p3.x,
-    y: a * p0.y + b * p1.y + c * p2.y + d * p3.y,
-  };
+/* The strand is a bracelet lying open on a surface: an ellipse with a small
+   gap at the top where the clasp closes. This matches how the real pieces are
+   photographed, and it gives 150 beads room to be seen — laid out as a
+   shallow arc instead, they collapse into a hairline. */
+function ringPoint(ring, t) {
+  const a = ring.startA + t * ring.sweep;
+  return { x: ring.cx + ring.rx * Math.cos(a), y: ring.cy + ring.ry * Math.sin(a) };
 }
 
-/* Tangent angle on a cubic bezier, for orienting disc beads. */
-function bezierAngle(t, p0, p1, p2, p3) {
-  const mt = 1 - t;
-  const dx =
-    3 * mt * mt * (p1.x - p0.x) + 6 * mt * t * (p2.x - p1.x) + 3 * t * t * (p3.x - p2.x);
-  const dy =
-    3 * mt * mt * (p1.y - p0.y) + 6 * mt * t * (p2.y - p1.y) + 3 * t * t * (p3.y - p2.y);
-  return Math.atan2(dy, dx);
+/* Tangent angle on the ellipse, for orienting disc beads. */
+function ringAngle(ring, t) {
+  const a = ring.startA + t * ring.sweep;
+  return Math.atan2(ring.ry * Math.cos(a), -ring.rx * Math.sin(a));
+}
+
+/* Ramanujan's approximation — accurate enough to space beads evenly. */
+function ellipsePerimeter(rx, ry) {
+  return Math.PI * (3 * (rx + ry) - Math.sqrt((3 * rx + ry) * (rx + 3 * ry)));
 }
 
 const BEAD_TYPES = [
@@ -87,25 +86,30 @@ export function createAssembly(canvas, options = {}) {
   let count = 0;
   let progress = 0;
   let needsDraw = true;
+  const scratchList = [];
+
+  const CLASP_GAP = 0.3; // radians of open cord at the top, where it fastens
 
   function curve() {
-    const cx = width / 2;
-    const cy = height * 0.5;
-    const span = Math.min(width * (width < 620 ? 0.88 : 0.76), 820);
-    const sag = Math.min(height * 0.2, 150);
+    const rx = Math.min(width * 0.4, 340);
+    const ry = Math.min(height * 0.4, rx * 0.7);
     return {
-      p0: { x: cx - span / 2, y: cy - sag * 0.4 },
-      p1: { x: cx - span / 4, y: cy + sag },
-      p2: { x: cx + span / 4, y: cy + sag },
-      p3: { x: cx + span / 2, y: cy - sag * 0.4 },
+      cx: width / 2,
+      cy: height / 2,
+      rx,
+      ry,
+      // Start just past the top gap and sweep all the way round to it.
+      startA: -Math.PI / 2 + CLASP_GAP / 2,
+      sweep: Math.PI * 2 - CLASP_GAP,
     };
   }
 
   function build() {
     const rand = mulberry32(seed);
-    // Bead count is driven by how many can sit at a readable size across the
-    // strand, not by a fixed number — on a phone that means far fewer beads.
-    count = width < 620 ? 14 : width < 1000 ? 24 : 34;
+    // A real C J Jewellery bracelet is about 8 inches with roughly 150 small
+    // beads, so the full strand is 150. Narrower screens step down only
+    // because the beads would otherwise fall below a visible size.
+    count = width < 620 ? 90 : width < 1000 ? 120 : 150;
     beads = [];
 
     for (let i = 0; i < count; i++) {
@@ -119,7 +123,9 @@ export function createAssembly(canvas, options = {}) {
         sz: 0.45 + rand() * 0.9, // depth: <1 further away, >1 nearer
         spin: (rand() - 0.5) * Math.PI * 2,
         wobble: rand() * Math.PI * 2,
-        radiusJitter: 0.86 + rand() * 0.3,
+        // Small beads on a strand are fairly uniform; heavy size jitter reads
+        // as sloppiness rather than as handmade.
+        radiusJitter: 0.93 + rand() * 0.14,
       });
     }
 
@@ -159,82 +165,93 @@ export function createAssembly(canvas, options = {}) {
     }
   }
 
-  function drawBead(bead, x, y, r, angle, depth, alpha) {
-    const pal = paletteFor(bead.kind);
-    const isDisc = bead.kind !== 'pearl';
+  /* Offscreen sprites, painted once. SPRITE is the sprite canvas size and
+     SPRITE_R the bead radius inside it — the margin leaves room for the
+     baked-in contact shadow so it is never clipped. */
+  const SPRITE = 128;
+  const SPRITE_R = 44;
+  const SPRITES = new Map();
 
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.translate(x, y);
-    ctx.rotate(angle);
+  function buildSprite(kind) {
+    const c = document.createElement('canvas');
+    c.width = SPRITE;
+    c.height = SPRITE;
+    const g = c.getContext('2d');
+    const pal = paletteFor(kind);
+    const isDisc = kind !== 'pearl';
+    const r = SPRITE_R;
+    const cx = SPRITE / 2;
+    const cy = SPRITE / 2;
 
-    // Soft contact shadow grounds the bead against the cord.
-    ctx.shadowColor = 'rgba(58, 44, 38, 0.28)';
-    ctx.shadowBlur = r * 0.9 * depth;
-    ctx.shadowOffsetY = r * 0.22;
+    g.translate(cx, cy);
 
-    const body = ctx.createRadialGradient(
-      -r * 0.34,
-      -r * 0.4,
-      r * 0.06,
-      0,
-      0,
-      r * 1.05
-    );
+    g.shadowColor = 'rgba(58, 44, 38, 0.3)';
+    g.shadowBlur = r * 0.5;
+    g.shadowOffsetY = r * 0.16;
+
+    const body = g.createRadialGradient(-r * 0.34, -r * 0.4, r * 0.06, 0, 0, r * 1.05);
     body.addColorStop(0, pal.core);
     body.addColorStop(0.45, pal.mid);
     body.addColorStop(1, pal.edge);
-    ctx.fillStyle = body;
+    g.fillStyle = body;
+    g.beginPath();
+    if (isDisc) g.ellipse(0, 0, r * 0.62, r, 0, 0, Math.PI * 2);
+    else g.arc(0, 0, r, 0, Math.PI * 2);
+    g.fill();
 
-    ctx.beginPath();
-    if (isDisc) {
-      // Flat heishi-style disc, seen slightly on edge.
-      const rx = r * 0.62;
-      ctx.ellipse(0, 0, rx, r, 0, 0, Math.PI * 2);
-    } else {
-      ctx.arc(0, 0, r, 0, Math.PI * 2);
-    }
-    ctx.fill();
+    g.shadowColor = 'transparent';
+    g.shadowBlur = 0;
+    g.shadowOffsetY = 0;
 
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetY = 0;
-
-    // Iridescent rim — the optical signature. A thin arc of blush shading
-    // into powder blue along the lower-right edge, as light wraps a pearl.
-    const rim = ctx.createLinearGradient(-r, -r, r, r);
+    // Iridescent rim — blush shading into powder blue, as light wraps a pearl.
+    const rim = g.createLinearGradient(-r, -r, r, r);
     rim.addColorStop(0, 'rgba(232, 180, 184, 0)');
     rim.addColorStop(0.45, 'rgba(232, 180, 184, 0.55)');
     rim.addColorStop(0.72, 'rgba(169, 196, 212, 0.6)');
     rim.addColorStop(1, 'rgba(169, 196, 212, 0)');
-    ctx.strokeStyle = rim;
-    ctx.lineWidth = Math.max(0.6, r * 0.16);
-    ctx.beginPath();
-    if (isDisc) {
-      ctx.ellipse(0, 0, r * 0.62, r, 0, 0, Math.PI * 2);
-    } else {
-      ctx.arc(0, 0, r * 0.92, 0, Math.PI * 2);
-    }
-    ctx.stroke();
+    g.strokeStyle = rim;
+    g.lineWidth = r * 0.16;
+    g.beginPath();
+    if (isDisc) g.ellipse(0, 0, r * 0.62, r, 0, 0, Math.PI * 2);
+    else g.arc(0, 0, r * 0.92, 0, Math.PI * 2);
+    g.stroke();
 
-    // Specular highlight.
-    ctx.globalAlpha = alpha * 0.9;
-    const spec = ctx.createRadialGradient(
-      -r * 0.36,
-      -r * 0.42,
-      0,
-      -r * 0.36,
-      -r * 0.42,
-      r * 0.5
-    );
+    const spec = g.createRadialGradient(-r * 0.36, -r * 0.42, 0, -r * 0.36, -r * 0.42, r * 0.5);
     spec.addColorStop(0, 'rgba(255,255,255,0.95)');
     spec.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = spec;
-    ctx.beginPath();
-    ctx.ellipse(-r * 0.34, -r * 0.4, r * 0.4, r * 0.3, -0.5, 0, Math.PI * 2);
-    ctx.fill();
+    g.fillStyle = spec;
+    g.beginPath();
+    g.ellipse(-r * 0.34, -r * 0.4, r * 0.4, r * 0.3, -0.5, 0, Math.PI * 2);
+    g.fill();
 
-    ctx.restore();
+    return c;
+  }
+
+  function spriteFor(kind) {
+    let s = SPRITES.get(kind);
+    if (!s) {
+      s = buildSprite(kind);
+      SPRITES.set(kind, s);
+    }
+    return s;
+  }
+
+  function drawBead(bead, x, y, r, angle, depth, alpha) {
+    const sprite = spriteFor(bead.kind);
+    const size = (r / SPRITE_R) * SPRITE;
+    const half = size / 2;
+    ctx.globalAlpha = alpha;
+    if (bead.kind === 'pearl') {
+      // A sphere looks the same at any rotation, so the common case skips the
+      // transform stack entirely — with 150 beads a frame that matters.
+      ctx.drawImage(sprite, x - half, y - half, size, size);
+    } else {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.drawImage(sprite, -half, -half, size, size);
+      ctx.restore();
+    }
   }
 
   function drawClasp(x, y, r, angle, alpha) {
@@ -259,26 +276,18 @@ export function createAssembly(canvas, options = {}) {
 
     const c = curve();
     const p = clamp01(progress);
-    // Beads are sized off the strand span rather than raw viewport width, so
-    // they stay physically legible on a phone instead of shrinking to dots.
-    // Sized so neighbouring beads just overlap along the curve — a strung
-    // bracelet reads as a continuous run, not a row of separated dots.
-    const span = Math.abs(c.p3.x - c.p0.x);
-    const baseRadius = Math.min(Math.max(span / count / 1.45, 10), 24);
+    // Beads sit shoulder to shoulder around the ring, as they do on a real
+    // strand. Radius follows the spacing between them, so the run stays
+    // continuous at any count or screen size.
+    const arc = ellipsePerimeter(c.rx, c.ry) * (c.sweep / (Math.PI * 2));
+    const baseRadius = Math.max((arc / count) * 0.58, 2.6);
 
-    // Cord: a fine luminous line that brightens as beads settle onto it.
+    // Cord: a fine line that brightens as beads settle onto it.
     ctx.save();
-    const cordAlpha = 0.16 + p * 0.34;
-    const cord = ctx.createLinearGradient(c.p0.x, c.p0.y, c.p3.x, c.p3.y);
-    cord.addColorStop(0, `rgba(176, 141, 87, 0)`);
-    cord.addColorStop(0.15, `rgba(176, 141, 87, ${cordAlpha})`);
-    cord.addColorStop(0.85, `rgba(176, 141, 87, ${cordAlpha})`);
-    cord.addColorStop(1, `rgba(176, 141, 87, 0)`);
-    ctx.strokeStyle = cord;
-    ctx.lineWidth = Math.max(1, baseRadius * 0.09);
+    ctx.strokeStyle = `rgba(176, 141, 87, ${0.18 + p * 0.3})`;
+    ctx.lineWidth = Math.max(0.8, baseRadius * 0.16);
     ctx.beginPath();
-    ctx.moveTo(c.p0.x, c.p0.y);
-    ctx.bezierCurveTo(c.p1.x, c.p1.y, c.p2.x, c.p2.y, c.p3.x, c.p3.y);
+    ctx.ellipse(c.cx, c.cy, c.rx, c.ry, 0, c.startA, c.startA + c.sweep);
     ctx.stroke();
     ctx.restore();
 
@@ -287,34 +296,36 @@ export function createAssembly(canvas, options = {}) {
     const windowSize = 0.55;
     const staggerSpan = 1 - windowSize;
 
-    const drawList = [];
+    // Reused across frames: allocating 150 objects per frame during a scrub
+    // creates enough garbage to show up as stutter.
+    const drawList = scratchList;
+    let n = 0;
 
     for (const bead of beads) {
       const start = (bead.slot / Math.max(1, count - 1)) * staggerSpan;
       const local = clamp01((p - start) / windowSize);
 
-      // Phase A: fly from scatter to the threading end of the cord.
-      // Phase B: slide along the cord to the bead's final position.
+      // Phase A: fly from scatter to the open end of the cord.
+      // Phase B: slide round the ring to the bead's final position.
       const flyEnd = 0.42;
-      const entry = bezierPoint(0, c.p0, c.p1, c.p2, c.p3);
+      const entry = ringPoint(c, 0);
 
       let x;
       let y;
       let angle;
       let depth = 1;
 
+      const driftX = c.cx + (bead.sx - 0.5) * width * 1.1;
+      const driftY = c.cy + (bead.sy - 0.5) * height * 1.2;
+
       if (local <= 0) {
-        // Still scattered, waiting to be threaded.
-        const driftX = c.p0.x + (bead.sx - 0.5) * width * 1.05;
-        const driftY = c.p0.y + (bead.sy - 0.5) * height * 1.15;
+        // Still loose, waiting to be threaded.
         x = driftX;
         y = driftY;
         angle = bead.spin;
         depth = bead.sz;
       } else if (local < flyEnd) {
         const f = easeOutCubic(local / flyEnd);
-        const driftX = c.p0.x + (bead.sx - 0.5) * width * 1.05;
-        const driftY = c.p0.y + (bead.sy - 0.5) * height * 1.15;
         x = driftX + (entry.x - driftX) * f;
         y = driftY + (entry.y - driftY) * f;
         angle = bead.spin * (1 - f);
@@ -322,10 +333,10 @@ export function createAssembly(canvas, options = {}) {
       } else {
         const f = easeInOutCubic((local - flyEnd) / (1 - flyEnd));
         const t = bead.t * f;
-        const pt = bezierPoint(t, c.p0, c.p1, c.p2, c.p3);
+        const pt = ringPoint(c, t);
         x = pt.x;
         y = pt.y;
-        angle = bezierAngle(t, c.p0, c.p1, c.p2, c.p3);
+        angle = ringAngle(c, t);
         depth = 1;
       }
 
@@ -337,24 +348,35 @@ export function createAssembly(canvas, options = {}) {
       }
 
       const r = baseRadius * bead.radiusJitter * (0.72 + depth * 0.28);
-      const alpha = local <= 0 ? 0.32 + bead.sz * 0.25 : Math.min(1, 0.5 + local * 0.9);
+      // Loose beads sit back quietly so the cloud reads as depth, not clutter;
+      // they come up to full strength as each one is threaded on.
+      const alpha = local <= 0 ? 0.16 + bead.sz * 0.2 : Math.min(1, 0.42 + local * 1.0);
 
-      drawList.push({ bead, x, y, r, angle, depth, alpha });
+      let slot = drawList[n];
+      if (!slot) slot = drawList[n] = {};
+      slot.bead = bead; slot.x = x; slot.y = y;
+      slot.r = r; slot.angle = angle; slot.depth = depth; slot.alpha = alpha;
+      n++;
     }
 
-    // Painter's algorithm: distant beads first.
-    drawList.sort((a, b) => a.depth - b.depth);
-    for (const item of drawList) {
+    // Painter's algorithm: distant beads first. Once everything is threaded
+    // they all share depth 1, so the sort can be skipped entirely.
+    const view = drawList.length === n ? drawList : drawList.slice(0, n);
+    if (p < 1) view.sort((a, b) => a.depth - b.depth);
+    for (let i = 0; i < n; i++) {
+      const item = view[i];
       drawBead(item.bead, item.x, item.y, item.r, item.angle, item.depth, item.alpha);
     }
+    ctx.globalAlpha = 1;
 
-    // Clasps fasten as the last bead settles, completing the piece.
+    // The clasp closes the gap at the top as the last bead settles.
     const claspAlpha = clamp01((p - 0.88) / 0.12);
     if (claspAlpha > 0) {
-      const a0 = bezierPoint(0, c.p0, c.p1, c.p2, c.p3);
-      const a1 = bezierPoint(1, c.p0, c.p1, c.p2, c.p3);
-      drawClasp(a0.x, a0.y, baseRadius, bezierAngle(0, c.p0, c.p1, c.p2, c.p3), claspAlpha);
-      drawClasp(a1.x, a1.y, baseRadius, bezierAngle(1, c.p0, c.p1, c.p2, c.p3) + Math.PI, claspAlpha);
+      const a0 = ringPoint(c, 0);
+      const a1 = ringPoint(c, 1);
+      const claspR = baseRadius * 2.4;
+      drawClasp(a0.x, a0.y, claspR, ringAngle(c, 0), claspAlpha);
+      drawClasp(a1.x, a1.y, claspR, ringAngle(c, 1) + Math.PI, claspAlpha);
     }
 
     needsDraw = false;

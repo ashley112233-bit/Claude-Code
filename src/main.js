@@ -51,6 +51,9 @@ if (yearEl) yearEl.textContent = String(new Date().getFullYear());
     scenes[index].classList.remove('is-active');
     index = (newIndex + scenes.length) % scenes.length;
     scenes[index].classList.add('is-active');
+    // The closing scene is light; the controls and outlined button sitting
+    // over it have to switch from pearl to ink to stay visible.
+    root.classList.toggle('is-final', scenes[index].classList.contains('cinematic__scene--final'));
 
     dashes.forEach((dash, i) => {
       dash.classList.toggle('is-done', i < index);
@@ -297,13 +300,13 @@ mm.add(
   const photo = section.querySelector('.assembly__photo');
 
   function setStep(p) {
-    const index = p < 0.28 ? 0 : p < 0.62 ? 1 : p < 0.82 ? 2 : 3;
+    const index = p < 0.26 ? 0 : p < 0.58 ? 1 : p < 0.80 ? 2 : 3;
     steps.forEach((step, i) => step.classList.toggle('is-current', i === index));
   }
 
   // The strand finishes threading well before the end of the scrub, leaving
   // room for the clasp to fasten and for the handover to the photograph.
-  const STRAND_COMPLETE_AT = 0.68;
+  const STRAND_COMPLETE_AT = 0.62;
 
   function applyProgress(p) {
     strand.setProgress(clamp01(p / STRAND_COMPLETE_AT));
@@ -313,7 +316,7 @@ mm.add(
     // The canvas fades out completely so the drawn beads never overlap the
     // photograph — the illustration hands over to the real piece.
     if (photo) {
-      const reveal = clamp01((p - 0.72) / 0.16);
+      const reveal = clamp01((p - 0.76) / 0.16);
       const eased = reveal * reveal * (3 - 2 * reveal); // smoothstep
       photo.style.opacity = String(eased);
       photo.style.transform = `translate(-50%, -50%) scale(${0.985 + eased * 0.015})`;

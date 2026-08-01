@@ -33,7 +33,7 @@
   "@type": "Organization",
   "name": "C J Jewellery",
   "url": "https://www.cjjewellery.example.com/",
-  "logo": "/images/logo.png",
+  "logo": "/images/logo-full.png",
   "email": "cmjosephs@gmail.com",
   "description": "Handmade bracelets, necklaces and earrings, ready-made or made to order, with UK delivery available.",
   "areaServed": "GB",
@@ -87,7 +87,7 @@
   <div class="cinematic__scene cinematic__scene--final" data-scene="3">
     <div class="cinematic__media"></div>
     <div class="cinematic__caption">
-      <img class="cinematic__logo" src="/images/logo.png" alt="C J Jewellery" width="640" height="640">
+      <img class="cinematic__logo" src="/images/logo-full.png" alt="C J Jewellery" width="670" height="530">
       <h2 class="cinematic__headline">Bracelets, necklaces and earrings</h2>
       <p class="cinematic__sub">Ready-made or bespoke — created by hand and sent by UK delivery.</p>
     </div>
@@ -124,8 +124,13 @@
      element with backdrop-filter (the solid header state) would be scoped to that
      element's own box instead of the viewport. -->
 <header class="site-header" id="siteHeader">
-  <a class="site-header__brand" href="#top">
-    <img src="/images/logo-horizontal.png" alt="C J Jewellery" class="site-header__logo">
+  <!-- The mark is artwork (an image); the name is live type. The supplied
+       logo's own wordmark is only ~27px tall in the source file, so scaling
+       it up for a header breaks it apart — set in Fraunces it stays crisp at
+       any size and always reads correctly. -->
+  <a class="site-header__brand" href="#top" aria-label="C J Jewellery — home">
+    <img src="/images/logo-mark.png" alt="" class="site-header__mark" width="670" height="450">
+    <span class="site-header__wordmark">C J Jewellery</span>
   </a>
 
   <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav">
@@ -512,7 +517,10 @@
   <div class="container">
     <div class="site-footer__top">
       <div>
-        <img src="/images/logo-horizontal.png" alt="C J Jewellery" class="site-footer__logo">
+        <span class="site-footer__brand">
+          <img src="/images/logo-mark.png" alt="" class="site-footer__logo" width="670" height="450">
+          <span class="site-footer__wordmark">C J Jewellery</span>
+        </span>
         <p class="site-footer__tagline">Handmade jewellery created with care</p>
       </div>
       <div class="site-footer__links">
