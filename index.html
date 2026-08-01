@@ -154,6 +154,31 @@
     </div>
   </section>
 
+  <!-- ============ ASSEMBLY (signature sequence) ============ -->
+  <!-- Beads are drawn on a canvas, not photographed. See src/beads.js for
+       how to swap in real cut-out bead photographs later. -->
+  <section class="assembly" id="assembly" aria-labelledby="assemblyHeading">
+    <div class="assembly__sticky">
+      <div class="assembly__stage">
+        <img class="assembly__photo" src="/images/bracelet-pearl-wrist.jpg"
+             alt="A finished handmade pearl bracelet worn on the wrist" loading="lazy">
+        <canvas class="assembly__canvas" id="assemblyCanvas" aria-hidden="true"></canvas>
+      </div>
+
+      <div class="assembly__copy">
+        <p class="eyebrow">Made by hand</p>
+        <h2 id="assemblyHeading" class="assembly__heading">Threaded, one bead at a time</h2>
+        <p class="assembly__steps" aria-live="polite">
+          <span class="assembly__step is-current" data-step="0">Beads are chosen for the colours you want.</span>
+          <span class="assembly__step" data-step="1">Each one is threaded onto the cord by hand.</span>
+          <span class="assembly__step" data-step="2">The clasp is fastened and the piece is checked.</span>
+          <span class="assembly__step" data-step="3">Finished, and ready to wear.</span>
+        </p>
+        <div class="assembly__track" aria-hidden="true"><span class="assembly__track-fill" id="assemblyTrack"></span></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ COLLECTION ============ -->
   <section class="collection" id="jewellery" aria-label="Jewellery collection">
     <div class="container">
@@ -255,12 +280,12 @@
           <div>
             <span class="bespoke__group-label">Colours</span>
             <div class="swatches" id="colourSwatches" role="group" aria-label="Choose colours">
-              <button type="button" class="swatch" style="background:#e8b4b8" data-value="Blush pink" aria-pressed="false" aria-label="Blush pink"></button>
-              <button type="button" class="swatch" style="background:#a9c4d4" data-value="Powder blue" aria-pressed="false" aria-label="Powder blue"></button>
-              <button type="button" class="swatch" style="background:#faf3ea" data-value="Cream" aria-pressed="false" aria-label="Cream"></button>
-              <button type="button" class="swatch" style="background:#2b2622" data-value="Charcoal" aria-pressed="false" aria-label="Charcoal"></button>
-              <button type="button" class="swatch" style="background:#b08d57" data-value="Gold tone" aria-pressed="false" aria-label="Gold tone"></button>
-              <button type="button" class="swatch" style="background:#c97f86" data-value="Rose" aria-pressed="false" aria-label="Rose"></button>
+              <button type="button" class="swatch" data-value="Blush pink" data-bead="blush" aria-pressed="false" aria-label="Blush pink"><canvas width="40" height="40" aria-hidden="true"></canvas></button>
+              <button type="button" class="swatch" data-value="Powder blue" data-bead="powder" aria-pressed="false" aria-label="Powder blue"><canvas width="40" height="40" aria-hidden="true"></canvas></button>
+              <button type="button" class="swatch" data-value="Cream" data-bead="cream" aria-pressed="false" aria-label="Cream"><canvas width="40" height="40" aria-hidden="true"></canvas></button>
+              <button type="button" class="swatch" data-value="Charcoal" data-bead="charcoal" aria-pressed="false" aria-label="Charcoal"><canvas width="40" height="40" aria-hidden="true"></canvas></button>
+              <button type="button" class="swatch" data-value="Gold tone" data-bead="gold" aria-pressed="false" aria-label="Gold tone"><canvas width="40" height="40" aria-hidden="true"></canvas></button>
+              <button type="button" class="swatch" data-value="Rose" data-bead="rose" aria-pressed="false" aria-label="Rose"><canvas width="40" height="40" aria-hidden="true"></canvas></button>
             </div>
           </div>
 

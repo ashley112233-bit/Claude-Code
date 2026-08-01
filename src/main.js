@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { createIcons, ChevronLeft, ChevronRight, Play, Pause, Menu, X } from 'lucide';
+import { createAssembly, paintSwatch } from './beads.js';
 import './style.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -17,6 +18,7 @@ createIcons({ icons: { ChevronLeft, ChevronRight, Play, Pause, Menu, X } });
 
 const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 const prefersReducedMotion = () => reducedMotionQuery.matches;
+const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
 /* ============================================================
    Footer year
@@ -282,6 +284,78 @@ mm.add(
 );
 
 /* ============================================================
+   Bead assembly sequence
+   ============================================================ */
+(function assemblySequence() {
+  const section = document.getElementById('assembly');
+  const canvas = document.getElementById('assemblyCanvas');
+  if (!section || !canvas) return;
+
+  const strand = createAssembly(canvas, { seed: 11 });
+  const steps = Array.from(section.querySelectorAll('.assembly__step'));
+  const track = document.getElementById('assemblyTrack');
+  const photo = section.querySelector('.assembly__photo');
+
+  function setStep(p) {
+    const index = p < 0.28 ? 0 : p < 0.62 ? 1 : p < 0.82 ? 2 : 3;
+    steps.forEach((step, i) => step.classList.toggle('is-current', i === index));
+  }
+
+  // The strand finishes threading well before the end of the scrub, leaving
+  // room for the clasp to fasten and for the handover to the photograph.
+  const STRAND_COMPLETE_AT = 0.68;
+
+  function applyProgress(p) {
+    strand.setProgress(clamp01(p / STRAND_COMPLETE_AT));
+    if (track) track.style.transform = `scaleX(${p})`;
+    setStep(p);
+    // The finished strand dissolves into the real photograph at the very end.
+    // The canvas fades out completely so the drawn beads never overlap the
+    // photograph — the illustration hands over to the real piece.
+    if (photo) {
+      const reveal = clamp01((p - 0.72) / 0.16);
+      const eased = reveal * reveal * (3 - 2 * reveal); // smoothstep
+      photo.style.opacity = String(eased);
+      photo.style.transform = `translate(-50%, -50%) scale(${0.985 + eased * 0.015})`;
+      canvas.style.opacity = String(1 - eased);
+    }
+  }
+
+  const resizeObserver = new ResizeObserver(() => {
+    strand.resize();
+    strand.setProgress(strand.getProgress());
+  });
+  resizeObserver.observe(canvas);
+
+  gsap.matchMedia().add(
+    { reduced: '(prefers-reduced-motion: reduce)', full: '(prefers-reduced-motion: no-preference)' },
+    (context) => {
+      const { reduced } = context.conditions;
+
+      if (reduced) {
+        // No pinning, no scrub: show the completed strand and the photograph.
+        section.classList.add('is-static');
+        applyProgress(1);
+        return;
+      }
+
+      const trigger = ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: '+=200%',
+        pin: section.querySelector('.assembly__sticky'),
+        scrub: 0.6,
+        onUpdate: (self) => applyProgress(self.progress),
+        onRefresh: (self) => applyProgress(self.progress),
+      });
+
+      applyProgress(0);
+      return () => trigger.kill();
+    }
+  );
+})();
+
+/* ============================================================
    Gallery lightbox
    ============================================================ */
 (function lightbox() {
@@ -425,6 +499,13 @@ function renderChosen() {
   const giftGroup = document.getElementById('giftChips');
   const lettersInput = document.getElementById('bespokeLetters');
   if (!colourGroup) return;
+
+  // Paint each colour option as a real bead rather than a flat circle, so the
+  // swatches match the strand in the assembly sequence.
+  colourGroup.querySelectorAll('.swatch').forEach((btn) => {
+    const c = btn.querySelector('canvas');
+    if (c) paintSwatch(c, btn.dataset.bead);
+  });
 
   colourGroup.querySelectorAll('.swatch').forEach((btn) => {
     btn.addEventListener('click', () => {

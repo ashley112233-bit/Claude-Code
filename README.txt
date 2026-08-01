@@ -36,6 +36,11 @@ command file above handles that for you automatically.
 This is a full visual and technical redesign, not a re-colouring of the
 previous version:
 
+  - A scroll-driven "Threaded, one bead at a time" sequence: beads drift
+    in scattered, thread themselves onto the cord one by one, the clasps
+    fasten, and the finished strand dissolves into the real photograph of
+    the bracelet on the wrist. You control it by scrolling — scroll back
+    and it runs in reverse.
   - A full-screen, slowly animated opening sequence built from four of
     the real supplied photographs, with automatic scene changes, and
     working previous/next, pause/play and progress controls.
@@ -63,6 +68,19 @@ The brand, the product photography, the enquiry form's behaviour, the
 price guidance, the delivery wording and the privacy/accessibility
 content are all preserved from the previous version — only the visual
 design and technical foundation changed.
+
+ABOUT THE BEADS IN THE THREADING SEQUENCE
+------------------------------------------
+The beads in the "Threaded, one bead at a time" sequence are drawn by the
+website itself (in src/beads.js), not photographed. That is deliberate:
+there are no photographs of individual loose beads, and cutting them out
+of photos of finished pieces would misrepresent what is actually sold.
+
+If you later photograph loose beads on a plain white background, they can
+replace the drawn ones without any redesign. src/beads.js has a comment
+block at the very top explaining exactly what to change — it is a few
+lines, and the threading motion, depth ordering and scroll control all
+keep working unchanged.
 
 
 3. WHERE TO CHANGE THE EMAIL ADDRESS AND WORDING
